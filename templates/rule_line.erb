@@ -1,0 +1,121 @@
+<%
+  # We can assume our input is clean.  if a particular value wasn't specified
+  # it will not be defined here (aka. $val = undef )
+
+  # We need to do some logic to make sure we dont setup any syntax errors
+  is_reject = false
+  is_log = false
+  is_input = false
+  is_output = false
+  is_forward = false
+  is_sports = false
+  is_dports = false
+
+  # action - default is to ACCEPT
+  if ! @action_r; @action_r = 'ACCEPT';
+  elsif @action_r == 'REJECT'; is_reject = true;
+  elsif @action_r == 'LOG'; is_log = true; end
+  @action_r = "-j #{@action_r}"
+
+  # chain
+  if ! @chain_r; @chain_r = 'INPUT'; end
+  if @chain_r == 'INPUT'; is_input = true;
+  elsif @chain_r == 'OUTPUT'; is_output = true;
+  elsif @chain_r == 'FORWARD'; is_forward = true;
+  else is_other = true; end
+  @chain_r = "-A #{@chain_r}"
+
+  # destination ip
+  if ! @destination_r; @destination_r = [ '' ];
+  elsif ! @destination.kind_of?(Array)
+    @destination_r = @destination_r.split(',')
+  end
+
+  # destination port
+  if @destination_port_r.kind_of?(Array) \
+    and @destination_port_r.compact().count() > 1
+    is_dports = true
+  end
+  if ! @destination_port_r; @destination_port_r = nil;
+  elsif is_dports 
+    @destination_port_r = "--dports #{@destination_port_r.join(',')}"
+  else @destination_port_r = "--dport #{@destination_port_r}"; end
+
+  # incoming interface
+  if ! @incoming_interface_r; @incoming_interface_r = nil;
+  else @incoming_interface_r = "-i #{incoming_interface_r}"; end
+
+  # outgoing interface
+  if ! @outgoing_interface_r; @outgoing_interface_r = nil;
+  else @outgoing_interface_r = "-o #{outgoing_interface_r}"; end
+
+  # protocol
+  if ! @protocol_r; @protocol_r = nil;
+  else @protocol_r = "-p #{@protocol_r}"; end
+
+  # source ip
+  if ! @source_r; @source_r = [ '' ];
+  elsif ! @source_r.kind_of?(Array); @source_r = @source_r.split(',')
+  end
+
+  # source port
+  if @source_port_r.kind_of?(Array) and @source_port_r.compact().count() > 1
+    is_sports = true
+  end
+  if ! @source_port_r; @source_port_r = nil;
+  elsif is_sports; @source_port_r = "--dports #{@source_port_r.join(',')}"
+  else @source_port_r = "--dport #{@source_port_r}"; end
+
+  multiport_r = nil
+  if is_sports or is_dports
+    multiport_r = '-m multiport'
+  end
+
+  # state
+  if ! @state_r; @state_r = nil;
+  else @state_r = "-m state --state #{@state_r}"; end
+
+  # We'll store our rules here
+  rules = [ ]
+
+  # older versions of iptables dont support comma-separated
+  # source/destinations, we'll just make each their own rule
+  @source_r.each do |src|
+    if src != ''; @src_r = "-s #{src}" 
+    else @src_r = nil; end
+    @destination_r.each do |dst|
+      if dst != ''; @dst_r = "-d #{dst}"
+      else @dst_r = nil; end
+      rule = [ ]
+      rule.push(@chain_r)
+      rule.push(@incoming_interface_r,@outgoing_interface_r)
+      rule.push(@protocol_r)
+      rule.push(multiport_r)
+      rule.push(@src_r,@source_port_r)
+      rule.push(@dst_r,@destination_port_r)
+      rule.push(@state_r)
+      rule.push(@action_r)
+      if is_reject
+        # we set the reject target, we should handle any reject-specific flags
+        if ! @reject_with_r; @reject_with_r = nil;
+        else @reject_with_r = "--reject-with #{@reject_with_r}"; end
+        rule.push(@reject_with_r)
+      elsif is_log
+        # we set the log target, we should handle any log-specific flags
+        if ! @log_level_r; @log_level_r = nil;
+        else @log_level_r = "--log-level #{@log_level_r}"; end
+        rule.push(@log_level_r)
+        if ! @log_prefix_r; @log_prefix_r = nil;
+        else @log_prefix_r = "--log-prefix #{@log_prefix_r}"; end
+        rule.push(@log_prefix_r)
+      end
+      rules.push(rule.compact().join(' '))
+    end
+  end
+-%>
+<%- if @comment_r -%>
+# <%= @comment_r %>
+<%- end -%>
+<%- rules.each do |rule| -%>
+<%= rule %>
+<%- end -%>
