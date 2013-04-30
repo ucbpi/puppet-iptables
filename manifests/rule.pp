@@ -214,6 +214,9 @@ define iptables::rule (
 
   if $table {
     $table_r = $table
+    if ! has_key ( $iptables::builtin_chains, $table_r ) {
+      fail ( "invalid table name -- ${table_r}" )
+    }
   } else {
     $table_r = 'filter'
   }
