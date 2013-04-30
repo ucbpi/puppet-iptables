@@ -28,7 +28,7 @@ define iptables::chain (
   $chain_r = upcase( $title )
   $table_r = downcase( $table )
 
-  if ! has_key( $iptables::priority[table], $table_r ) {
+  if ! has_key( $iptables::builtin_chains, $table_r ) {
     # this is not a valid table, otherwise we would have noted the built-in
     # tables for the chain. go for the punt!
     fail( "invalid iptables table - ${table_r}" )

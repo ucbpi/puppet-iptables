@@ -213,7 +213,7 @@ define iptables::rule (
   else { $reject_with_r = undef }
 
   if $table {
-    $table_r = $table
+    $table_r = downcase( $table )
     if ! has_key ( $iptables::builtin_chains, $table_r ) {
       fail ( "invalid table name -- ${table_r}" )
     }
