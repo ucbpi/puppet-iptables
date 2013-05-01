@@ -6,11 +6,21 @@
 # - mangle
 # - raw
 #
+# === Dependencies:
+#
+# - concat
+# - stdlib
+# - oski
+#
 define iptables::table {
   include iptables
 
-  $name_r = downcase( $name )
-  validate_re( $name_r, '^(filter|nat|mangle|raw)$' )
+  if $name !~ /^(filter|nat|mangle|raw)$/ {
+    fail ( "Iptables::Table[${name}] : invalid table title - ${name}" )
+  } else {
+    $name_r = $name
+  }
+
   $separator = $iptables::join_separator
   $secondary_pri = lead( $iptables::priority[table][name],
                           $iptables::secondary_priority_width )
