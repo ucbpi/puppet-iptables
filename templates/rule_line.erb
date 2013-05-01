@@ -63,8 +63,8 @@
     is_sports = true
   end
   if ! @source_port_r; @source_port_r = nil;
-  elsif is_sports; @source_port_r = "--dports #{@source_port_r.join(',')}"
-  else @source_port_r = "--dport #{@source_port_r}"; end
+  elsif is_sports; @source_port_r = "--sports #{@source_port_r.join(',')}"
+  else @source_port_r = "--sport #{@source_port_r}"; end
 
   multiport_r = nil
   if is_sports or is_dports
