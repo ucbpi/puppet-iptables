@@ -195,13 +195,13 @@ define iptables::rule (
 
   # Source port
   if $source_port {
+    $source_port_r = $source_port
     if is_array( $source_port ) {
       # TODO better validation for arrays
     } else {
       # TODO: better port validation
       validate_re( $source_port_r, '^[0-9]{1,5}$' )
     }
-    $source_port_r = $source_port
   } else {  $source_port_r = undef }
 
   if $reject_with {
