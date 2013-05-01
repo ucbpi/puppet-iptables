@@ -126,7 +126,7 @@ define iptables::rule (
   if $action {
     $action_r = upcase( $action )
     # TODO: Better validation
-    validate_re( $action_r, '^[A-Z][0-9A-Za-z_]*$' )
+    validate_re( $action_r, '^[A-Z][0-9A-Za-z_-]*$' )
   }
   else { $action_r = 'ACCEPT' }
 
@@ -152,7 +152,7 @@ define iptables::rule (
     if is_array( $destination_port_r ) {
       # we were given an array of ports. we need to find a way to check these
     } else {
-      validate_re( $destination_port_r, '^[0-9]{1,5}$' )
+      validate_re( $destination_port_r, '^[0-9]{1,5}(:[0-9]{1,5})?$' )
     }
   } else { $destination_port_r = undef }
 
@@ -200,7 +200,7 @@ define iptables::rule (
       # TODO better validation for arrays
     } else {
       # TODO: better port validation
-      validate_re( $source_port_r, '^[0-9]{1,5}$' )
+      validate_re( $source_port_r, '^[0-9]{1,5}(:[0-9]{1,5})?$' )
     }
   } else {  $source_port_r = undef }
 
