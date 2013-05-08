@@ -32,7 +32,7 @@
 #
 # [*source*]
 #
-# Source address, subnet or ip range.  IPv4 only for now.
+# Source address, subnet or ip range.
 #
 # [*state*]
 #
@@ -141,9 +141,24 @@ define iptables::rule (
 
   # Destination address
   if $destination {
-    $destination_r = $destination
+    $destination_hash = split_ip_by_version( $destination )
+
+    # handle ipv4 addresses
+    if size( $destination_hash[ipv4] ) > 0 {
+      $destination_ipv4_r = $destination_hash[ipv4]
+    } else {
+      $destination_ipv4_r = undef
+    }
+
+    # handle ipv6 addresses
+    if size( $destination_hash[ipv6] ) > 0 {
+      $destination_ipv6_r = $destination_hash[ipv6]
+    } else {
+      $destination_ipv6_r = $destination_hash[ipv6]
+    }
   } else {
-    $destination_r = undef
+    $destination_ipv4_r = undef
+    $destination_ipv6_r = undef
   }
 
   # Destination port
@@ -188,9 +203,24 @@ define iptables::rule (
 
   # Source address
   if $source {
-    $source_r = $source
+    $source_hash = split_ip_by_version( $source )
+
+    # handle v4 addresses
+    if size( $source_hash[ipv4] ) > 0 {
+      $source_ipv4_r = $source_hash[ipv4]
+    } else {
+      $source_ipv4_r = undef
+    }
+
+    # handle v6 addresses
+    if size( $source_hash[ipv6] ) > 0 {
+      $source_ipv6_r = $source_hash[ipv6]
+    } else {
+      $source_ipv6_r = undef
+    }
   } else {
-    $source_r = undef
+    $source_ipv4_r = undef
+    $source_ipv6_r = undef
   }
 
   # Source port
@@ -236,9 +266,38 @@ define iptables::rule (
   $priorities = [ $table_priority_r, $table_r, $priority_r, $chain_r ]
   $rule_priority_r = join( $priorities, $iptables::join_separator )
 
-  concat::fragment { "rule-${name}":
-    target  => $iptables::file_r,
-    order   => $rule_priority_r,
-    content => template('iptables/rule_line.erb'),
+  if !$source_ipv4_r and 
+     !$destination_ipv4_r and
+     !$source_ipv6_r and 
+     !$destination_ipv6_r {
+
+    # If no source/destinations were specified, we'll add the rule to
+    # both iptables and ip6tables
+    $ipv4_rule = true
+    $ipv6_rule = true
+  } else {
+    if $source_ipv4_r or $destination_ipv4_r {
+      $ipv4_rule = true
+    }
+
+    if $source_ipv6_r or $destination_ipv6_r {
+      $ipv6_rule = true
+    }
+  }
+
+  if $ipv4_rule {
+    concat::fragment { "rule-${name}":
+      target  => $iptables::file_r,
+      order   => $rule_priority_r,
+      content => template('iptables/rule_line.erb'),
+   }
+  }
+
+  if $ipv6_rule {
+    concat::fragment { "rule6-${name}":
+      target  => $iptables::file6_r,
+      order   => $rule_priority_r,
+      content => template(iptables/rule6_line.erb'),
+    }
   }
 }

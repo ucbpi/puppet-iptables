@@ -19,16 +19,31 @@
 # Which table should this be associated with? Default is 'filter'
 #
 define iptables::chain (
+  $name = undef,
   $comment = undef,
   $policy = 'ACCEPT',
-  $table = 'filter'
+  $table = 'filter',
+  $protocol_version = '4'
 ) {
   include iptables
 
-  $chain_r = upcase( $title )
+  $chain_r = upcase( $name )
   $table_r = downcase( $table )
 
-  if ! has_key( $iptables::builtin_chains, $table_r ) {
+  # Validate our Protocol Version (must be 4 or 6)
+  $protocol_versions = $iptables::protocol_versions
+  if ! member( $protocol_versions, $protocol_version ) {
+    $bad_protocol_msg_arr = [ "Iptables::Chain[${title}] :",
+                              'Invalid protocol_version set', '-',
+                              $protocol_version ]
+    $bad_protocol_msg = join( $bad_protocol_msg_arr, ' ' )
+    fail( $bad_protocol_msg )
+  }
+
+  # Validate our table
+  $tables
+  $builtin_chains = $iptables::builtin_chains[$protocol_version][$table_r]
+  if ! has_key( $builtin_chains, $table_r ) {
     # this is not a valid table, otherwise we would have noted the built-in
     # tables for the chain. go for the punt!
     fail( "invalid iptables table - ${table_r}" )
