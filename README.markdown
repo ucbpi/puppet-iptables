@@ -2,6 +2,17 @@
 
 This module provides mechanisms to manage your iptables firewall file
 
+# Functions #
+
+split_ip_by_version
+-------------------
+
+- ips : array of ips, any combination of ipv4 and ipv6
+
+Returns a hash with 3 keys - 'ipv4' and 'ipv6' with each contain an array of
+addresses/networks from their respective family.  'other' contains all entries
+that weren't valid addresses.
+
 # Examples #
 
 <pre><code>
