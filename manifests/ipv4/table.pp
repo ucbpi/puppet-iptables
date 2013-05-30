@@ -12,7 +12,7 @@
 # - stdlib
 # - oski
 #
-define iptables::table {
+define iptables::ipv4::table {
   include iptables
 
   if $name !~ /^(filter|nat|mangle|raw)$/ {

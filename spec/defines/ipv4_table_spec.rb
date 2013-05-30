@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'iptables::table' do
+describe 'iptables::ipv4::table' do
   let(:facts) { { :concat_basedir => '/var/lib/puppet/concat' } }
 
   context 'with a valid table title' do
