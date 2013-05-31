@@ -5,7 +5,6 @@ describe 'format_port' do
     input = "22"
     output = {
       'port' => '--dport 22',
-      'ports' => '--dport 22',
       'raw' => "22",
       'multiport' => false,
     }
@@ -16,7 +15,6 @@ describe 'format_port' do
     input = [ "22", "80", "443" ]
     output = {
       'port' => "--dports 22,80,443",
-      'ports' => "--dports 22,80,443",
       'multiport' => true,
       'raw' => [ "22", "80", "443" ],
     }
@@ -27,7 +25,6 @@ describe 'format_port' do
     input = [ "ftp", "ssh", "80", "443" ]
     output = {
       'port' => "--dports 80,443",
-      'ports' => "--dports 80,443",
       'multiport' => true,
       'raw' => [ "ftp", "ssh", "80", "443" ]
     }
@@ -44,7 +41,6 @@ describe 'format_port' do
   context "=> test array of all the same sport" do
     input = [ "22", "22", "22" ]
     output = { 
-      'ports' => '--sport 22',
       'port' => '--sport 22',
       'multiport' => false,
       'raw' => input,
@@ -55,7 +51,6 @@ describe 'format_port' do
   context "=> test array of multiple duplicate sports" do
     input = [ "22", "22", "22", "80", "80" ]
     output = { 
-      'ports' => '--sports 22,80',
       'port' => '--sports 22,80',
       'multiport' => true,
       'raw' => input,
@@ -65,10 +60,18 @@ describe 'format_port' do
   context "=> test array of all the same sport" do
     input = [ "22", "22", "22" ]
     output = { 
-      'ports' => '--sport 22',
       'port' => '--sport 22',
       'multiport' => false,
       'raw' => input,
+    }
+    it { should run.with_params(input,'sport').and_return(output) }
+  end
+  context "=> send nil (undef)" do
+    input = nil
+    output = {
+      'port' => '',
+      'raw' => '',
+      'multiport' => false,
     }
     it { should run.with_params(input,'sport').and_return(output) }
   end

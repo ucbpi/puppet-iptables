@@ -4,7 +4,8 @@ module Puppet::Parser::Functions
 ) do |args|
     Puppet::Parser::Functions.function('warning')
     
-    ports = args[0].dup
+    ports = []
+    ports = args[0].dup unless args[0] == nil
     type = "dport"
     type = "sport" if args[1] == "sport"
 
@@ -12,9 +13,8 @@ module Puppet::Parser::Functions
     if ports.size == 0
       return { 
         'port' => '',
-        'ports' => '',
-        'raw' => args[0],
-        multiport => false
+        'raw' => '',
+        'multiport' => false
       }
     end
 
@@ -47,7 +47,6 @@ module Puppet::Parser::Functions
     r_h = {
       'multiport' => multiport,
       'port' => port,
-      'ports' => port,
       'raw' => args[0],
     }
 
