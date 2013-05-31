@@ -54,12 +54,6 @@ License
 
 None
 
-Change Log
-----------
-
-* 0.0.2 : Improve RegEx validation code and fix bug with source port (ajacques)
-* 0.0.1 : Initial Release
-
 Contact
 -------
 
