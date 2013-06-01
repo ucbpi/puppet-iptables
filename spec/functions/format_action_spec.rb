@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe 'format_action' do
-  context '=> Pass legal action' do
-    returns = { 'action' => '-j ACCEPT',
-                'raw' => 'ACCEPT' }
-    it { should run.with_params('ACCEPT').and_return( returns ) }
-
+  context '=> Pass legal action/chain' do
+    it { should run.with_params('ACCEPT').and_return('-j ACCEPT') }
   end
 
-  context '=> Pass illegal status' do
-    it { should run.with_params('SOME CHAIN').and_raise_error(Puppet::ParseError) }
+  context '=> Pass illegal action/chain' do
+    it {
+      should run.with_params('SOME CHAIN').and_raise_error(Puppet::ParseError)
+    }
   end
 end

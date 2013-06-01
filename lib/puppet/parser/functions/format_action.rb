@@ -10,11 +10,6 @@ module Puppet::Parser::Functions
         "action cannot contain whitepace - \"#{action}\""
     end
 
-    r_h = {
-     'action' => "-j #{action}",
-     'raw' => action,
-    }
-
-    return r_h
+    return "-j #{action}"
   end
 end
