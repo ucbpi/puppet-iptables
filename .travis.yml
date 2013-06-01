@@ -1,0 +1,12 @@
+rvm: 1.8.7
+
+branches:
+  only:
+      - issues/3_ip6tables_support
+
+notifications:
+  email:
+    - arusso@berkeley.edu
+env:
+  - PUPPET_VERSION='~> 2.6.0'
+  - PUPPET_VERSION='~> 2.7.0'
