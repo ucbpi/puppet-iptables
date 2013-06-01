@@ -10,4 +10,16 @@ describe 'format_action' do
       should run.with_params('SOME CHAIN').and_raise_error(Puppet::ParseError)
     }
   end
+
+  context '=> Pass nil' do
+    it {
+      should run.with_params(nil).and_raise_error(Puppet::ParseError)
+    }
+  end
+
+  context '=> Pass empty string' do
+    it {
+      should run.with_params('').and_raise_error(Puppet::ParseError)
+    }
+  end
 end
