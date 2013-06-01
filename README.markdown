@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/arusso23/puppet-iptables.png?branch=issues/3_ip6tables_support)](https://travis-ci.org/arusso23/puppet-iptables)
+
 # iptables Module #
 
 This module provides mechanisms to manage your iptables firewall file
