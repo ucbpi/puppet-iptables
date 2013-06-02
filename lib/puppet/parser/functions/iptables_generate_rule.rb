@@ -103,6 +103,26 @@ EOS
     #
     rules = [ ]
 
+
+    # lets handle the comments first
+    comment_line_width = 80
+    comment = options['comment']
+    if comment != nil 
+      prepend = "# "
+      comment_width = comment_line_width - prepend.length
+      comments = []
+      if comment.kind_of?(Array)
+        comment.each do |c|
+          comments += c.scan(/.{1,#{comment_width}}/) if c.kind_of?(String)
+        end
+      else
+        comments = comment.scan(/.{1,#{comment_width}}/)
+      end
+      comments.map! { |c| c = prepend + c }
+      rules += comments
+    end
+
+
     src.each do |s|
       # we'll store our pieces here, and join() them later
       rule = []

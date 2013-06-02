@@ -61,5 +61,23 @@ describe 'iptables_generate_rule' do
                                      'chain' => 'FORWARD' } ) \
                      .and_return( [ '-A FORWARD -i eth1 -o eth1 -j ACCEPT' ]) }
     end
+
+    context "=> comment support" do
+      it { should run.with_params( { 'comment' => [ 
+                                  'multi', 
+                                  'line',
+                                  "comment that will exceed 80 chars so we " \
+                                  + "can test wrapping.  this is a " \
+                                  + "nice-to-have for documenting our " \
+                                  + "iptables rules" ] } ) \
+                     .and_return( [ '# multi', '# line',
+                                    "# comment that will exceed 80 chars so " \
+                                    + "we can test wrapping.  this is a " \
+                                    + "nice-to-", "# have for documenting " \
+                                    + "our iptables rules", \
+                                    "-A INPUT -j ACCEPT" ] ) 
+      }
+    end
+                                    
   end
 end
