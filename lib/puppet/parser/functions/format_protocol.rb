@@ -24,6 +24,10 @@ Examples:
   format_protocol('icmp',6)
   format_protocol('icmpv6',6)
 
+  # returns ''
+  format_protocol(undef)
+  format_protocol('')
+
   # parse error
   format_protocol('proto')
   format_protocol('proto',6)
