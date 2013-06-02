@@ -39,20 +39,21 @@ Examples:
     Puppet::Parser::Functions.function('warning')
     
     ports = []
-    ports = args[0].dup unless args[0] == nil
+    ports = args[0] unless args[0] == nil
     type = "dport"
     type = "sport" if args[1] == "sport"
 
-    # special case -- we weren't given any ports to format
+
+    ports = ports.split(',') unless ports.kind_of?(Array)
+    ports.uniq!
+
+    # special case -- we weren't given an empty array or string
     if ports.size == 0
       return { 
         'port' => '',
         'multiport' => false
       }
     end
-
-    ports = ports.split(',') unless ports.kind_of?(Array)
-    ports.uniq!
 
     # go through our ports, removing any non numeric ones
     # if we've got at least one good one, we'll just skip the bad ones and warn

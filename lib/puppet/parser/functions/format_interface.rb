@@ -9,7 +9,7 @@ module Puppet::Parser::Functions
     int_rx = /^[a-z0-9\.\-_]+$/i
 
     interface = ''
-    interface = args[0].dup unless args[0] == nil
+    interface = args[0].dup unless args == nil or args[0] == nil
 
     # make sure we were at least passed a string or nil
     raise Puppet::ParseError, "non-string interface passed - #{interface}" \
