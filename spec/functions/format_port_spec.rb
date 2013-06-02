@@ -5,7 +5,6 @@ describe 'format_port' do
     input = "22"
     output = {
       'port' => '--dport 22',
-      'raw' => "22",
       'multiport' => false,
     }
     it { should run.with_params(input).and_return( output ) }
@@ -16,7 +15,6 @@ describe 'format_port' do
     output = {
       'port' => "--dports 22,80,443",
       'multiport' => true,
-      'raw' => [ "22", "80", "443" ],
     }
     it { should run.with_params(input,'dport').and_return( output ) }
   end
@@ -26,7 +24,6 @@ describe 'format_port' do
     output = {
       'port' => "--dports 80,443",
       'multiport' => true,
-      'raw' => [ "ftp", "ssh", "80", "443" ]
     }
     it { should run.with_params(input,'dport').and_return( output ) }
   end
@@ -43,7 +40,6 @@ describe 'format_port' do
     output = { 
       'port' => '--sport 22',
       'multiport' => false,
-      'raw' => input,
     }
     it { should run.with_params(input,'sport').and_return(output) }
   end
@@ -53,7 +49,6 @@ describe 'format_port' do
     output = { 
       'port' => '--sports 22,80',
       'multiport' => true,
-      'raw' => input,
     }
     it { should run.with_params(input,'sport').and_return(output) }
   end
@@ -62,7 +57,6 @@ describe 'format_port' do
     output = { 
       'port' => '--sport 22',
       'multiport' => false,
-      'raw' => input,
     }
     it { should run.with_params(input,'sport').and_return(output) }
   end
@@ -70,7 +64,6 @@ describe 'format_port' do
     input = nil
     output = {
       'port' => '',
-      'raw' => '',
       'multiport' => false,
     }
     it { should run.with_params(input,'sport').and_return(output) }

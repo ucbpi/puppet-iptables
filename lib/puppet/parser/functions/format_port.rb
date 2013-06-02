@@ -1,5 +1,39 @@
 module Puppet::Parser::Functions
   newfunction(:format_port, :type => :rvalue,:doc => <<-EOS
+format_port( port, type ):
+
+Provided port(s), as either an array or comma separated list of port numbers,
+and the type of port, either sport (source port) or dport (dest.  port),
+generates a partial iptables rule handling the appropriate ports.
+
+Result is returned in a hash, with the flag multiport set to true if more than
+one valid port was passed.  False otherwise.
+
+If multiple ports are specified, but some are not legal, they will be skipped
+and a warning will be logged.
+
+If all ports specified are invalid, a ParseError will be thrown.
+
+If no ports are specified, an empty string will be returned.
+
+If not specified, the type defaults to 'dport'
+
+Examples:
+
+  # returns { 'port' => '--dport 22', 'multiport' => false }
+  format_port('22')
+
+  # returns { 'port' => '--dports 22,80', 'multiport' => true }
+  format_port('22,80')
+  format_port([ '22', '80' ])
+  format_port([ '22', '80', 'ftp' ]) # a warning is also logged for 'ftp'
+
+  # returns { 'port' => '', 'multiport' => false }
+  format_port('')
+  format_port(nil)
+
+  # throws ParseError
+  format_port('ftp')
   EOS
 ) do |args|
     Puppet::Parser::Functions.function('warning')
@@ -13,7 +47,6 @@ module Puppet::Parser::Functions
     if ports.size == 0
       return { 
         'port' => '',
-        'raw' => '',
         'multiport' => false
       }
     end
@@ -47,7 +80,6 @@ module Puppet::Parser::Functions
     r_h = {
       'multiport' => multiport,
       'port' => port,
-      'raw' => args[0],
     }
 
     return r_h
