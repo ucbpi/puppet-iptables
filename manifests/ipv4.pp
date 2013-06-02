@@ -93,14 +93,14 @@ class iptables::ipv4 {
   $commit_order = lead($order[table][commit], $primary_order_width)
   concat::fragment { 'iptables-commit-line':
     ensure  => 'present',
-    target  => $file_r,
+    target  => $file,
     order   => $commit_order,
     content => "COMMIT\n",
   }
 
   $header_order = lead($order[comment][start], $primary_order_width)
   concat::fragment { 'iptables-header-comment':
-    target  => $file_r,
+    target  => $file,
     content => "# Firewall Managed by Puppet\n\n",
     order   => $header_order,
   }
