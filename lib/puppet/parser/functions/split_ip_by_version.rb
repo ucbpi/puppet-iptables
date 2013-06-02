@@ -9,9 +9,8 @@ only IPv6 addresses/subnets, and one with elements that didn't match either.
   ) do |arguments|
     require 'ipaddr'
 
-    if (arguments.size < 1) then
-      raise(Puppet::ParseError, "get_ipv6(): no arguments specified!")
-    end
+    # allow them to pass nothing, and we'll return 3 empty arrays
+    arguments = [ ] if arguments == nil
 
     v4_arr = Array.new
     v6_arr = Array.new

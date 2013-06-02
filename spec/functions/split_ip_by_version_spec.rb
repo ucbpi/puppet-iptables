@@ -29,4 +29,10 @@ describe 'split_ip_by_version' do
     output = { 'other' => [ 'localhost' ], 'ipv4' => [ ], 'ipv6' => [ ] }
     it { should run.with_params(input).and_return( output ) }
   end
+
+  context '=> pass nothing' do
+    it { should run.with_params(nil).and_return(
+      { 'other' => [ ], 'ipv4' => [ ], 'ipv6' => [ ] } )
+    }
+  end
 end
