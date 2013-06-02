@@ -6,10 +6,12 @@ module Puppet::Parser::Functions
     # setup some objects to hold our regexes
     out_rx = /^out(going)?$/i
     in_rx = /^in(coming)?$/i
-    int_rx = /^[a-z0-9\.\-_]+$/i
+    int_rx = /^[a-z0-9\.\-_]+\+?$/i
+
+    return '' if args == nil
 
     interface = ''
-    interface = args[0].dup unless args == nil or args[0] == nil
+    interface = String(args[0]).dup unless args[0] == nil
 
     # make sure we were at least passed a string or nil
     raise Puppet::ParseError, "non-string interface passed - #{interface}" \
