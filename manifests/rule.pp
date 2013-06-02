@@ -64,10 +64,51 @@ define iptables::rule (
   $source = undef,
   $source_port = undef,
   $state = undef,
-  $table = undef
+  $table = undef,
+  $version = undef,
 ) {
   include iptables
 
   $source_r = split_by_ip_version( $source )
-  $v4_source = 
+
+  $options = {
+    'action'             => $action,
+    'chain'              => $chain,
+    'destination'        => $destination,
+    'destination_port'   => $destination_port,
+    'incoming_interface' => $incoming_interface,
+    'log_level'          => $log_level,
+    'log_prefix'         => $log_prefix,
+    'limit'              => $limit,
+    'limit_burst'        => $limit_burst,
+    'outgoing_interface' => $outgoing_interface,
+    'protocol'           => $protocol,
+    'raw'                => $raw,
+    'reject_with'        => $reject_with,
+    'source'             => $source,
+    'source_port'        => $source_port,
+    'state'              => $state,
+    'table'              => $table,
+  }
+
+  case $version {
+    /(?i-mx:ip(v)?)?4/: {
+      iptables::ipv4::rule { "iptables::ipv4::rule: ${title}":
+        options => $options
+      }
+    }
+    /(?i-mx:ip(v)?)?6/: {
+      iptables::ipv6::rule { "iptables::ipv6::rule: ${title}":
+        options => $options,
+      }
+    }
+    default: {
+      iptables::ipv4::rule { "iptables::ipv4::rule: ${title}":
+        options => $options
+      }
+      iptables::ipv6::rule { "iptables::ipv6::rule: ${title}":
+        options => $options,
+      }
+    }
+  }
 }
