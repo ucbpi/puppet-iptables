@@ -17,7 +17,9 @@ Examples:
   format_chain('SOME CHAIN')
   EOS
 ) do |args|
-    chain = args[0]
+    raise Puppet::ParseError, "no chain specified" if args == nil
+
+    chain = args[0] unless args[0] == nil
 
     # Do some validation here
     if chain =~ /\s/

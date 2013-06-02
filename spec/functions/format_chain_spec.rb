@@ -9,9 +9,13 @@ describe 'format_chain' do
     }
   end
 
-  context '=> Pass illegal status' do
+  context '=> Pass illegal chain' do
     it {
       should run.with_params('SOME CHAIN').and_raise_error(Puppet::ParseError)
     }
+  end
+
+  context '=> Pass nil chain' do
+    it { should run.with_params(nil).and_raise_error(Puppet::ParseError) }
   end
 end
