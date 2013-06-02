@@ -2,21 +2,13 @@ require 'spec_helper'
 
 describe 'format_port' do
   context "=> test defaults to dport" do
-    input = "22"
-    output = {
-      'port' => '--dport 22',
-      'multiport' => false,
-    }
-    it { should run.with_params(input).and_return( output ) }
+    it { should run.with_params('22') \
+      .and_return( { 'port' => '--dport 22', 'multiport' => false } ) }
   end
 
   context "=> test array of legal dports" do
-    input = [ "22", "80", "443" ]
-    output = {
-      'port' => "--dports 22,80,443",
-      'multiport' => true,
-    }
-    it { should run.with_params(input,'dport').and_return( output ) }
+    it { should run.with_params([ '22', '80' ],'dport') \
+      .and_return( { 'port' => '--dports 22,80', 'multiport' => true } ) }
   end
 
   context "=> test array of mixed legality dports" do
