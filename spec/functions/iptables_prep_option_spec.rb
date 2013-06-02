@@ -56,4 +56,8 @@ describe 'iptables_prep_option' do
       it { should run.with_params('option_four',vals,defs,-1).and_return( out ) }
     end
   end
+
+  context "=> test with no defaults specified" do
+    it { should run.with_params('option_four',vals,nil,-1).and_return(-1) }
+  end
 end

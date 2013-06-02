@@ -23,9 +23,11 @@ Example:
   opt4_val = iptables_prep_option( 'opt4', vals, defs, default )
   EOS
 ) do |args|
+    vals = { }
+    defs = { }
     name = args[0]
-    vals = args[1]
-    defs = args[2]
+    vals = args[1] unless args[1] == nil
+    defs = args[2] unless args[2] == nil
     default = ''
     default = args[3] unless ! args[3]
 
