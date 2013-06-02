@@ -71,18 +71,18 @@ EOS
     #
     in_int = function_iptables_prep_option( [ 'incoming_interface', options,
                                                 defaults ] )
-    in_int = function_format_interface( [ in_int ] )
+    in_int = function_format_interface( [ in_int, 'in' ] )
 
     #
     ## outgoing_interface option (out_int)
     #
     out_int = function_iptables_prep_option( [ 'outgoing_interface', options,
                                                 defaults ] )
-    out_int = function_format_interface( out_int )
+    out_int = function_format_interface( [ out_int,'out' ] )
 
     raise Puppet::ParseError,
       "only the FORWARD chain may specify both an in and out interface" \
-      if out_int != '' and in_int = '' and ! flags['chn_FORWARD']
+      if out_int != '' and in_int != '' and ! flags['chn_FORWARD']
 
     #
     ## protocol option (proto)
