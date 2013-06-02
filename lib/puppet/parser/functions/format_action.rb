@@ -17,7 +17,12 @@ Examples:
   format_action('SOME CHAIN')
   EOS
 ) do |args|
-    action = args[0]
+    action = args[0] unless args[0] == nil
+    
+    if action == nil
+      raise Puppet::ParseError, \
+        "action not specified"
+    end
 
     # do some basic validation of the action
     if action =~ /\s/
