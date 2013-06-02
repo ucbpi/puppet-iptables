@@ -29,4 +29,12 @@ describe 'format_protocol' do
   context "=> test numeric protocol version passed" do
     it { should run.with_params('icmp',6).and_return( '-p icmpv6' ) }
   end
+
+  context "=> test no protocol passed" do
+    it { should run.with_params( '' ).and_return( '' ) }
+  end
+
+  context "=> test with nil passed" do
+    it { should run.with_params( nil ).and_return('') }
+  end
 end

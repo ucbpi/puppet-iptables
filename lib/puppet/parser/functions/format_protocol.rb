@@ -34,9 +34,14 @@ Examples:
       '6' => [ 'tcp', 'udp', 'icmpv6', 'esp', 'all' ]
     }
 
-    protocol = args[0].dup
+    return '' if args == nil
+
+    protocol = ''
+    protocol = args[0].dup unless args[0] == nil
     version = '4'
     version = '6' if String(args[1]) =~ /(ip(v)?)?6/i
+
+    return protocol if protocol == ''
 
     # we'll be nice and translate icmp to icmpv6 when passed icmp for formatting
     # a ipv6 protocol
