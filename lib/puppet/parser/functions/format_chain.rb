@@ -1,7 +1,20 @@
 module Puppet::Parser::Functions
   newfunction(:format_chain, :type => :rvalue,:doc => <<-EOS
-given a chain name, returns a hash with the chain formatted for insertion into
-an iptables rule along with the raw chain name.
+format_chain( name )
+
+Given an chain name, generates the partial iptables rule to faciliate appending
+a rule to given chain.
+
+Examples:
+
+  # returns '-A INPUT'
+  format_chain('INPUT')
+
+  # returns '-A LOGNDUMP'
+  format_chain('LOGNDUMP')
+
+  # throws ParseError
+  format_chain('SOME CHAIN')
   EOS
 ) do |args|
     chain = args[0]
@@ -12,11 +25,6 @@ an iptables rule along with the raw chain name.
         "chain name cannot contain whitespace - \"#{chain}\""
     end
 
-    r_h = { 
-      'chain' => "-A #{chain}",
-      'raw' => chain,
-    }
-
-    return r_h
+    return "-A #{chain}"
   end
 end
