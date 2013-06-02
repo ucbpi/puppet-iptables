@@ -1,5 +1,28 @@
 module Puppet::Parser::Functions
   newfunction(:format_state, :type => :rvalue,:doc => <<-EOS
+format_state( state )
+
+Given an array or comma separated list of states, generates the partial iptables
+rule to facilitate matching on specific states.
+
+If no state is specified, an empty string is returned.
+
+If multiple states are specified any invalid states will be skipped, and a
+warning will be logged.
+
+If all passed states are invalid, a ParseError is thrown
+
+Examples:
+
+  # returns '-m state --state NEW,REL'
+  format_state('NEW,RELATED')
+
+  # returns '-m state --state NEW'
+  format_state(['NEW','NET'])
+
+  # throws parse error
+  format_state('NET')
+  format_state([ 'NEXT', 'NET' ])
   EOS
 ) do |args|
     Puppet::Parser::Functions.function('warning')
@@ -11,7 +34,7 @@ module Puppet::Parser::Functions
     states = states.split(',') unless states.kind_of?(Array)
 
     # handle if we were not passed any states
-    return { 'state' => '', 'raw' => ''} if states.size == 0
+    return '' if states.size == 0
 
     # limit each state to the first 3 letters since we just need to provide
     # enough information for iptables such that the state is not ambigous
@@ -34,9 +57,6 @@ module Puppet::Parser::Functions
     state = ""
     state = "-m state --state #{states.join(',')}" if states.size > 0
 
-    r_h = {
-      'state' => state,
-      'raw' => args[0],
-    }
+    return state
   end
 end
