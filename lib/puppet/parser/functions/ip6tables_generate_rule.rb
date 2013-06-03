@@ -99,6 +99,23 @@ EOS
     ste = r_h['state']
 
     #
+    ## log options (log)
+    #
+    lio = function_iptables_prep_option( [ 'log_ip_options', options,defaults] )
+    ll = function_iptables_prep_option( [ 'log_level', options, defaults ] )
+    lp = function_iptables_prep_option( [ 'log_prefix', options, defaults ] )
+    lto = function_iptables_prep_option( [ 'log_tcp_options',options,defaults] )
+    lts = function_iptables_prep_option( ['log_tcp_sequence',options,defaults] )
+    log_opts = {
+      'log_ip_options' => lio,
+      'log_level' => ll,
+      'log_prefix' => lp,
+      'log_tcp_options' => lto,
+      'log_tcp_sequence' => lts,
+    }
+    log = function_format_log( [ log_opts ] ) if flags['act_LOG']
+
+    #
     ## begin processing
     #
     rules = [ ]
@@ -146,6 +163,7 @@ EOS
         rule.push(dport)
         rule.push(raw)
         rule.push(act)
+        rule.push(log) if flags['act_LOG']
         rule.compact!
         rule.delete('')
       end
