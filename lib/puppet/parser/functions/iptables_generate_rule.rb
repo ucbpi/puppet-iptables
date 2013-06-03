@@ -122,6 +122,9 @@ EOS
       rules += comments
     end
 
+    # allow users to pass rule rule code through, without being
+    # tampered with
+    raw = options['raw']
 
     src.each do |s|
       # we'll store our pieces here, and join() them later
@@ -141,6 +144,7 @@ EOS
         rule.push('-m multiport') if flags['multiport']
         rule.push(sport)
         rule.push(dport)
+        rule.push(raw)
         rule.push(act)
         rule.compact!
         rule.delete('')

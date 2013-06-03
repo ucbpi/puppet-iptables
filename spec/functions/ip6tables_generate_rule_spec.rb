@@ -78,6 +78,17 @@ describe 'ip6tables_generate_rule' do
                                     "-A INPUT -j ACCEPT" ] ) 
       }
     end
-                                    
+
+    context "=> test raw code insertion" do
+      it {
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '32768:61000',
+                  'raw' => '! --syn' }
+
+        should run.with_params( input ) \
+                  .and_return( [ "-A INPUT -p tcp --dport 32768:61000 ! " \
+                                 + "--syn -j ACCEPT" ] )
+      }
+    end                                
   end
 end
