@@ -53,11 +53,26 @@ describe 'format_port' do
     it { should run.with_params(input,'sport').and_return(output) }
   end
   context "=> send nil (undef)" do
-    input = nil
-    output = {
-      'port' => '',
-      'multiport' => false,
+    it {
+      input = nil
+      output = {
+        'port' => '',
+        'multiport' => false,
+      }
+      should run.with_params(input,'sport').and_return(output)
     }
-    it { should run.with_params(input,'sport').and_return(output) }
+  end
+
+  context "=> port range notation" do
+    it {
+      # This should work
+      input = "32768:61000"
+      output = { 'port' => "--dport 32768:61000", 'multiport' => false }
+      should run.with_params(input).and_return(output)
+
+      # This should fail
+      input = "32768:"
+      should run.with_params(input).and_raise_error(Puppet::ParseError)
+    }
   end
 end
