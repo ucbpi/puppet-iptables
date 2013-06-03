@@ -1,3 +1,6 @@
+2013-06-02 Aaron Russo <arusso@berkeley.edu> - 0.0.3
+* travis-ci support
+
 2013-04-30 Aaron Russo <arusso@berkeley.edu> - 0.0.2
 * Improve RegEx validation code and fix bug with source port (ajacques)
 
