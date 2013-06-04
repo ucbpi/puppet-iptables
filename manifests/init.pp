@@ -40,4 +40,49 @@ class iptables (
   # This is used to ensure consistent join separators when generating the order
   # for the concat fragments
   $join_separator = '_'
+
+  $table_order_width = 1
+  $table_order = {
+    comment => 0,
+    filter  => 1,
+    nat     => 2,
+    mangle  => 3,
+    raw     => 4,
+    commit  => 9,
+  }
+
+  $chain_order_width = 1
+  $chain_order = {
+    table       => 0,
+    input       => 1,
+    output      => 2,
+    forward     => 3,
+    prerouting  => 4,
+    postrouting => 5,
+    other       => 9,
+  }
+
+  $rule_order_width = 3
+  # These are more as a guideline, and not set in stone
+  # infra_allow    - infrastructure rules that should rarely change and not be
+  #                   overridden
+  # temp_rules      - temporary rules
+  # specific_allows - host-specific allows
+  # specific_denys  - host-specific denies
+  # global_allows   - global allows
+  # catchall_reject - reject any non-matching rules
+  $rule_order = {
+    infra           => 0,
+    temp            => 200,
+    specific_allow  => 400,
+    specific_deny   => 600,
+    global_allows   => 800,
+    catchall_reject => 999,
+  }
+
+  $order = {
+    table => $table_order,
+    chain => $chain_order,
+    rule  => $rule_order,
+  }
 }

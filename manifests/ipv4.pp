@@ -6,73 +6,8 @@ class iptables::ipv4 {
   include iptables
 
   $config = $iptables::config
-
-  $table_order_width = 1
-  $table_order = {
-    comment => 0,
-    filter  => 1,
-    nat     => 2,
-    mangle  => 3,
-    raw     => 4,
-    commit  => 9,
-  }
-
-  $chain_order_width = 1
-  $chain_order = {
-    table       => 0,
-    input       => 1,
-    output      => 2,
-    forward     => 3,
-    prerouting  => 4,
-    postrouting => 5,
-    other       => 9,
-  }
-
-  $rule_order_width = 3
-  # These are more as a guideline, and not set in stone
-  # infra_allow    - infrastructure rules that should rarely change and not be
-  #                   overridden
-  # temp_rules      - temporary rules
-  # specific_allows - host-specific allows
-  # specific_denys  - host-specific denies
-  # global_allows   - global allows
-  # catchall_reject - reject any non-matching rules
-  $rule_order = {
-    infra           => 0,
-    temp            => 200,
-    specific_allow  => 400,
-    specific_deny   => 600,
-    global_allows   => 800,
-    catchall_reject => 999,
-  }
-
-  $order = {
-    table => $table_order,
-    chain => $chain_order,
-    rule  => $rule_order,
-  }
-
-  # Define our valid icmp_reject_types here, this will be used by our
-  # generate_iptables_fragment function
-  #
-  $icmp_reject_types = [
-    'icmp-net-unreachable',
-    'icmp-host-unreachable',
-    'icmp-port-unreachable',
-    'icmp-proto-unreachable',
-    'icmp-net-prohibited',
-    'icmp-host-prohibited',
-    'icmp-admin-prohibited'
-  ]
-
-  # Define our builtin chains
-  #
-  $builtin_chains = {
-    nat    => [ 'PREROUTING', 'OUTPUT', 'POSTROUTING' ],
-    raw    => [ 'PREROUTING', 'OUTPUT' ],
-    filter => [ 'INPUT', 'FORWARD', 'OUTPUT' ],
-    mangle => [ 'PREROUTING', 'OUTPUT', 'INPUT', 'FORWARD', 'POSTROUTING' ],
-  }
+  $order = $iptables::order
+  $table_order_width = $iptables::table_order_width
 
   ########
   # iptables
