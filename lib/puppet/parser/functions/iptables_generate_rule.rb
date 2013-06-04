@@ -12,114 +12,68 @@ EOS
     Puppet::Parser::Functions.function('format_protocol')
     Puppet::Parser::Functions.function('format_state')
 
-    options = args[0]
-    defaults = args[1]
+    options = { }
+    options = args[0] if args[0].is_a?(Hash)
 
-    flags = {}
-    flags.default = false
+    defaults = { }
+    defaults = args[1] if args[1].is_a?(Hash)
 
-    #
-    ## action option (act)
-    #
-    act_input = function_iptables_prep_option( [ 'action', options, defaults,
-                                                  'ACCEPT' ] )
-    act = function_format_action( [ act_input ] )
-    flags["act_#{act_input}"] = true  # flags['act_LOG'], flags['act_REJECT']
+    # default to IP Version 4
+    version = '4'
+    version = String(args[2])[-1].chr \
+      if String(args[2]) =~ /(?i-mx:(ip)?(v)?(4|6))/
 
-    #
-    ## chain option (chn)
-    #
-    chn_input = function_iptables_prep_option( [ 'chain', options, defaults,
-                                               'INPUT' ] )
-    chn = function_format_chain( [ chn_input ] )
-    flags["chn_#{chn_input}"] = true
+    raise Puppet::Error, "invalid version detected - #{version}" \
+      unless version =~ /(4|6)/
 
-    #
-    ## destination option (dst_ip)
-    #
-    dst = function_iptables_prep_option( [ 'destination', options, defaults ] )
-    dst = function_split_ip_by_version( [ dst ] )['ipv4']
+    opt = function_iptables_parse_options( [ options, defaults, version ] )
+    flg = opt['mod_flags']
+    flg.default=false
+
+    # addresses are arrays that should always have at least one object, even if
+    # its an empty-string
+    dst = function_split_ip_by_version( [ opt['destination'] ] )[version]
     dst.push('') if dst.size == 0
+    src = function_split_ip_by_version( [ opt['source'] ] )[version]
+    src.push('') if src.size == 0
 
-    #
-    ## destination_port option (dport)
-    
-    dport = function_iptables_prep_option( [ 'destination_port', options,
-                                              defaults ] )
-    r_h = function_format_port( [ dport, 'dport' ] )
-    dport = r_h['port']
-    flags['multiport'] = true if r_h['multiport']
+    # our ports also require a little logic
+    dpt_h = function_format_port( [ opt['destination_port'], 'dport' ] )
+    dpt = dpt_h['port']
+    spt_h = function_format_port( [ opt['source_port'], 'sport' ] )
+    spt = spt_h['port']
+    flg['multiport'] = true if spt_h['multiport'] or dpt_h['multiport']
 
-    #
-    ## source option (src_ip)
-    #
-    src = function_iptables_prep_option( [ 'source', options, defaults ] )
-    src = function_split_ip_by_version( [ src ] )['ipv4']
-    src.push('') if src.size == 0 
+    # the rest are pretty easy
+    act = function_format_action( [ opt['action'] ] )
+    chn = function_format_chain( [ opt['chain'] ] )
+    in_int = function_format_interface( [ opt['incoming_interface'], 'in' ] )
+    out_int = function_format_interface( [ opt['outgoing_interface'], 'out' ] )
+    proto = function_format_protocol( [ opt['protocol'], version ] )
+    ste = function_format_state( [ opt['state'] ] )
 
-    #
-    ## source_port option (sport)
-    #
-    sport = function_iptables_prep_option( [ 'source_port', options,
-                                              defaults ] )
-    r_h = function_format_port( [ sport, 'sport' ] )
-    sport = r_h['port']
-    flags['multiport'] = true if r_h['multiport']
+    # logging options are all formatted in one function, so we'll pass in a
+    # hash of values.  we'll also only format if the act_LOG flag is set,
+    # otherwise these options are useless
+    log_opts = {
+      'log_ip_options' => options['log_ip_options'],
+      'log_level' => options['log_level'],
+      'log_prefix' => options['log_prefix'],
+      'log_tcp_options' => options['log_tcp_options'],
+      'log_tcp_sequence' => options['log_tcp_sequence'],
+    }
+    log = function_format_log( [ log_opts ] ) if flg['act_LOG']
 
-    #
-    ## incoming_interface option (in_int)
-    #
-    in_int = function_iptables_prep_option( [ 'incoming_interface', options,
-                                                defaults ] )
-    in_int = function_format_interface( [ in_int, 'in' ] )
-
-    #
-    ## outgoing_interface option (out_int)
-    #
-    out_int = function_iptables_prep_option( [ 'outgoing_interface', options,
-                                                defaults ] )
-    out_int = function_format_interface( [ out_int,'out' ] )
-
+    # throw some errors when appropriate
     raise Puppet::ParseError,
       "only the FORWARD chain may specify both an in and out interface" \
-      if out_int != '' and in_int != '' and ! flags['chn_FORWARD']
-
-    #
-    ## protocol option (proto)
-    #
-    proto = function_iptables_prep_option( [ 'protocol', options, defaults ] )
-    proto = function_format_protocol( [ proto ] )
-    flags["proto_#{proto}"] = true
-
-    #
-    ## state option (ste)
-    #
-    ste = function_iptables_prep_option( [ 'state', options, defaults ] )
-    r_h = function_format_state( [ ste ] )
-    ste = r_h['state']
-
-    #
-    ## log options (log)
-    #
-    lio = function_iptables_prep_option( [ 'log_ip_options', options,defaults] )
-    ll = function_iptables_prep_option( [ 'log_level', options, defaults ] )
-    lp = function_iptables_prep_option( [ 'log_prefix', options, defaults ] )
-    lto = function_iptables_prep_option( [ 'log_tcp_options',options,defaults] )
-    lts = function_iptables_prep_option( ['log_tcp_sequence',options,defaults] )
-    log_opts = {
-      'log_ip_options' => lio,
-      'log_level' => ll,
-      'log_prefix' => lp,
-      'log_tcp_options' => lto,
-      'log_tcp_sequence' => lts,
-    }
-    log = function_format_log( [ log_opts ] ) if flags['act_LOG']
+      + " FWD=#{flg['chn_FORWARD']}, out=#{out_int}, in=#{in_int}" \
+      if out_int != '' and in_int != '' and ! flg['chn_FORWARD']
 
     #
     ## begin processing
     #
     rules = [ ]
-
 
     # lets handle the comments first
     comment_line_width = 80
@@ -158,12 +112,12 @@ EOS
         rule.push(@src)
         rule.push(@dst)
         rule.push(proto)
-        rule.push('-m multiport') if flags['multiport']
-        rule.push(sport)
-        rule.push(dport)
+        rule.push('-m multiport') if flg['multiport']
+        rule.push(spt)
+        rule.push(dpt)
         rule.push(raw)
         rule.push(act)
-        rule.push(log) if flags['act_LOG']
+        rule.push(log) if flg['act_LOG']
         rule.compact!
         rule.delete('')
       end
