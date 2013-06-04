@@ -69,7 +69,7 @@ define iptables::rule (
 ) {
   include iptables
 
-  $source_r = split_by_ip_version( $source )
+  $source_r = split_ip_by_version( $source )
 
   $options = {
     'action'             => $action,
@@ -93,20 +93,20 @@ define iptables::rule (
 
   case $version {
     /(?i-mx:ip(v)?)?4/: {
-      iptables::ipv4::rule { "iptables::ipv4::rule: ${title}":
+      iptables::ipv4::rule { $title:
         options => $options
       }
     }
     /(?i-mx:ip(v)?)?6/: {
-      iptables::ipv6::rule { "iptables::ipv6::rule: ${title}":
+      iptables::ipv6::rule { $title:
         options => $options,
       }
     }
     default: {
-      iptables::ipv4::rule { "iptables::ipv4::rule: ${title}":
+      iptables::ipv4::rule { $title:
         options => $options
       }
-      iptables::ipv6::rule { "iptables::ipv6::rule: ${title}":
+      iptables::ipv6::rule { $title:
         options => $options,
       }
     }
