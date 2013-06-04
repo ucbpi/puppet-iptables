@@ -6,7 +6,10 @@ describe 'iptables::ipv4::table' do
   context 'with a valid table title' do
     let(:title) { 'filter' } 
     it do
-      should contain_concat__fragment('iptables-table-filter')
+      should contain_concat__fragment('iptables-table-filter').with(
+        { 'target' => '/etc/sysconfig/iptables',
+          'order' => '1_filter_0',
+          'content' => "*filter\n" })
     end
   end
 

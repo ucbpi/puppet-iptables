@@ -18,69 +18,53 @@
 #
 # Which table should this be associated with? Default is 'filter'
 #
-define iptables::chain (
-  $name = undef,
+define iptables::ipv4::chain (
   $comment = undef,
   $policy = 'ACCEPT',
   $table = 'filter',
-  $protocol_version = '4'
 ) {
-  include iptables
+  include iptables::ipv4
 
-  $chain_r = upcase( $name )
-  $table_r = downcase( $table )
+  $order = $iptables::order
+  $config = $iptables::ipv4::config
+  $separator = $iptables::join_separator
 
-  # Validate our Protocol Version (must be 4 or 6)
-  $protocol_versions = $iptables::protocol_versions
-  if ! member( $protocol_versions, $protocol_version ) {
-    $bad_protocol_msg_arr = [ "Iptables::Chain[${title}] :",
-                              'Invalid protocol_version set', '-',
-                              $protocol_version ]
-    $bad_protocol_msg = join( $bad_protocol_msg_arr, ' ' )
-    fail( $bad_protocol_msg )
+  # ensure oir name is reasonable, according to iptables at least
+  if $name !~ /^[^-].*$/ {
+    fail( "invalid chain - name cannot begin with a '-' character - '${name}'" )
   }
 
-  # Validate our table
-  $tables
-  $builtin_chains = $iptables::builtin_chains[$protocol_version][$table_r]
-  if ! has_key( $builtin_chains, $table_r ) {
-    # this is not a valid table, otherwise we would have noted the built-in
-    # tables for the chain. go for the punt!
-    fail( "invalid iptables table - ${table_r}" )
+  # build our table if it has not been defined yet
+  if ! defined( Iptables::Ipv4::Table[$table] ) {
+    iptables::ipv4::table{ $table: }
+  }
+  $table_order_arr = [ $order['table'][$table], $table ]
+  $table_order = join( $table_order_arr, $separator )
+
+  # grab the builtin chains for this table
+  $builtin = $iptables::ipv4::builtin_chains[$table]
+
+  # if the chain is a builtin, apply the policy
+  if member( $builtin, $name ) {
+    $policy_r = upcase( $policy )
+    validate_re( $policy_r, '^(ACCEPT|DROP)$',
+      "invalid chain policy - ${policy_r}" )
+    $chain_order_arr = [ $table_order, $order['chain'][$name], $name ]
   } else {
-    # let's determine our policy for the chain
-    $builtin_chains = $iptables::builtin_chains[$table_r]
-    if member( $builtin_chains, $chain_r ) {
-      # this is a built-in chain, policy must be one of ACCEPT or DROP
-      $policy_r = upcase( $policy )
-      validate_re( $policy_r, '^(ACCEPT|DROP)$',
-        "invalid chain policy - ${policy_r}")
-      $chain_pri = $iptables::priority[chain][builtin]
-    } else {
-      $policy_r = '-'
-      $chain_pri = $iptables::priority[chain][other]
-    }
+    $policy_r = '-'
+    $chain_order_arr = [ $table_order, $order['chain']['other'], $name ]
   }
 
-  $separator='_'
-  $table_pri = $iptables::priority[table][$table_r]
-  $secondary_pri = lead( $chain_pri, $iptables::secondary_priority_width )
-  $priorities =
-    [ $table_pri, $table_r, $secondary_pri, $chain_r ]
-  $file_pri = join( $priorities, $separator )
+  $chain_order = join( $chain_order_arr, $separator )
 
   $file_content = $comment ? {
-    undef   => ":${chain_r} ${policy_r} [0:0]\n",
-    default => "# ${comment}\n:${chain_r} ${policy_r} [0:0]\n",
+    undef   => ":${name} ${policy_r} [0:0]\n",
+    default => "# ${comment}\n:${name} ${policy_r} [0:0]\n",
   }
 
-  concat::fragment { "iptables-table-${table_r}-chain-${chain_r}":
-    order   => $file_pri,
-    target  => $iptables::file_r,
+  concat::fragment { "iptables-table-${table}-chain-${name}":
+    order   => $chain_order,
+    target  => $config,
     content => $file_content,
-  }
-
-  if ! defined( Iptables::Table[$table_r] ) {
-    iptables::table { $table_r: }
   }
 }

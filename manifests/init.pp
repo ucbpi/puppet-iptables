@@ -53,13 +53,13 @@ class iptables (
 
   $chain_order_width = 1
   $chain_order = {
-    table       => 0,
-    input       => 1,
-    output      => 2,
-    forward     => 3,
-    prerouting  => 4,
-    postrouting => 5,
-    other       => 9,
+    table         => 0,
+    'INPUT'       => 1,
+    'OUTPUT'      => 2,
+    'FORWARD'     => 3,
+    'PREROUTING'  => 4,
+    'POSTROUTING' => 5,
+    other         => 9,
   }
 
   $rule_order_width = 3

@@ -9,6 +9,13 @@ class iptables::ipv4 {
   $order = $iptables::order
   $table_order_width = $iptables::table_order_width
 
+  $builtin_chains = {
+    nat    => [ 'PREROUTING', 'OUTPUT', 'POSTROUTING' ],
+    raw    => [ 'PREROUTING', 'OUTPUT' ],
+    filter => [ 'INPUT', 'FORWARD', 'OUTPUT' ],
+    mangle => [ 'PREROUTING', 'OUTPUT', 'INPUT', 'FORWARD', 'POSTROUTING' ]
+  }
+
   ########
   # iptables
   #
@@ -32,8 +39,4 @@ class iptables::ipv4 {
     content => "# Firewall Managed by Puppet\n\n",
     order   => $header_order,
   }
-
-  # This is used to ensure consistent join separators when generating the order
-  # for the concat fragments
-  $join_separator = '_'
 }

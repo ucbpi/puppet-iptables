@@ -6,31 +6,28 @@
 # - mangle
 # - raw
 #
-# === Dependencies:
-#
-# - concat
-# - stdlib
-# - oski
-#
 define iptables::ipv4::table {
-  include iptables
+  include iptables::ipv4
+
+  $order = $iptables::order
+  $table_width = $iptables::table_order_width
+  $chain_width = $iptables::chain_order_width
+  $separator = $iptables::join_separator
+  $config = $iptables::ipv4::config
 
   if $name !~ /^(filter|nat|mangle|raw)$/ {
     fail ( "Iptables::Table[${name}] : invalid table title - ${name}" )
-  } else {
-    $name_r = $name
   }
 
-  $separator = $iptables::join_separator
-  $secondary_pri = lead( $iptables::priority[table][name],
-                          $iptables::secondary_priority_width )
-  $priorities = [ $iptables::priority[table][$name_r], $name_r, $secondary_pri ]
+  $table_order = lead( $order['table'][$name], $table_width )
+  $chain_order = lead( $order['chain']['table'], $chain_width )
 
-  $priority_r = join( $priorities, $separator )
+  $table_order_arr = [ $table_order, $name, $chain_order ]
+  $table_order_r = join( $table_order_arr, $separator )
 
-  concat::fragment { "iptables-table-${name_r}":
-    target  => $iptables::file_r,
-    order   => $priority_r,
-    content => "*${name_r}\n",
+  concat::fragment { "iptables-table-${name}":
+    target  => $config,
+    order   => $table_order_r,
+    content => "*${name}\n",
   }
 }
