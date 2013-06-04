@@ -21,7 +21,7 @@
 define iptables::ipv4::chain (
   $comment = undef,
   $policy = 'ACCEPT',
-  $table = 'filter',
+  $table = 'filter'
 ) {
   include iptables::ipv4
 
