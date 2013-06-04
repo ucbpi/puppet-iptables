@@ -2,6 +2,8 @@ module Puppet::Parser::Functions
   newfunction(:iptables_parse_options, :type => :rvalue, :doc => <<-EOS
 EOS
 ) do |args|
+    Puppet::Parser::Functions.function('iptables_prep_option')
+
     options = { }
     options = args[0] if args[1].is_a?(Hash)
 

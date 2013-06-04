@@ -3,7 +3,7 @@ module Puppet::Parser::Functions
 Provided an array of options, generates iptables rule(s) 
 EOS
 ) do |args|
-    Puppet::Parser::Functions.function('iptables_prep_option')
+    Puppet::Parser::Functions.function('iptables_parse_options')
     Puppet::Parser::Functions.function('format_action')
     Puppet::Parser::Functions.function('split_ip_by_version')
     Puppet::Parser::Functions.function('format_chain')
