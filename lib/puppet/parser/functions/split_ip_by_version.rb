@@ -41,7 +41,7 @@ only IPv6 addresses/subnets, and one with elements that didn't match either.
       end # string handling
     end # argument traversal
 
-    ret_hash = { 'ipv6' => v6_arr, 'ipv4' => v4_arr, 'other' => other_arr }
+    ret_hash = { '6' => v6_arr, '4' => v4_arr, 'other' => other_arr }
     return ret_hash
   end # split_by_ip_version
 end # module
