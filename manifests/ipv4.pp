@@ -2,17 +2,10 @@
 #
 # Sets up our iptables (ipv4 rules)
 #
-# === Parameters:
-#
-# [*file*]
-#
-# The location of the target file where our rules will live.  Defaults to
-# /etc/sysconfig/iptables
-#
 class iptables::ipv4 {
-  include concat::setup
+  include iptables
 
-  $file = $iptables::iptables_file
+  $config = $iptables::config
 
   $table_order_width = 1
   $table_order = {
@@ -35,7 +28,7 @@ class iptables::ipv4 {
     other       => 9,
   }
 
-  $rule_order_width = 1
+  $rule_order_width = 3
   # These are more as a guideline, and not set in stone
   # infra_allow    - infrastructure rules that should rarely change and not be
   #                   overridden
@@ -45,8 +38,8 @@ class iptables::ipv4 {
   # global_allows   - global allows
   # catchall_reject - reject any non-matching rules
   $rule_order = {
-    infra_rules     => 0,
-    temp_rules      => 200,
+    infra           => 0,
+    temp            => 200,
     specific_allow  => 400,
     specific_deny   => 600,
     global_allows   => 800,
@@ -84,44 +77,23 @@ class iptables::ipv4 {
   ########
   # iptables
   #
-  concat { $file:
+  concat { $config:
     owner => 'root',
     group => 'root',
     mode  => '0440',
   }
 
-  $commit_order = lead($order[table][commit], $primary_order_width)
+  $commit_order = lead($order['table']['commit'], $table_order_width)
   concat::fragment { 'iptables-commit-line':
     ensure  => 'present',
-    target  => $file,
+    target  => $config,
     order   => $commit_order,
     content => "COMMIT\n",
   }
 
-  $header_order = lead($order[comment][start], $primary_order_width)
+  $header_order = lead($order['table']['comment'], $table_order_width)
   concat::fragment { 'iptables-header-comment':
-    target  => $file,
-    content => "# Firewall Managed by Puppet\n\n",
-    order   => $header_order,
-  }
-
-  #######
-  # ip6tables
-  #
-  concat { $file6_r:
-    owner => 'root',
-    group => 'root',
-    mode  => '0440',
-  }
-
-  concat::fragment { 'ip6tables-commit-line':
-    target  => $file6_r,
-    order   => $commit_order,
-    content => "COMMIT\n",
-  }
-
-  concat::fragment { 'ip6tables-header-comment':
-    target  => $file6_r,
+    target  => $config,
     content => "# Firewall Managed by Puppet\n\n",
     order   => $header_order,
   }
@@ -129,6 +101,4 @@ class iptables::ipv4 {
   # This is used to ensure consistent join separators when generating the order
   # for the concat fragments
   $join_separator = '_'
-
-  $protocol_versions = [ '4', '6' ]
 }
