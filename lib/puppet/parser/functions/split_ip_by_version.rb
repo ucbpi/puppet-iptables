@@ -31,13 +31,15 @@ only IPv6 addresses/subnets, and one with elements that didn't match either.
         end # array traversal
       elsif arg.is_a?(String)
         # This argument is a string
-        begin
-          ip = IPAddr.new(arg)
-          v4_arr.push(arg) if ip.ipv4?
-          v6_arr.push(arg) if ip.ipv6?
-        rescue
-          other_arr.push(arg)
-        end # begin/rescue
+        arg.split(',').each do |a|
+          begin
+            ip = IPAddr.new(a)
+            v4_arr.push(a) if ip.ipv4?
+            v6_arr.push(a) if ip.ipv6?
+          rescue
+            other_arr.push(arg)
+          end
+        end
       end # string handling
     end # argument traversal
 
