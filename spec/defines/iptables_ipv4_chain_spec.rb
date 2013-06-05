@@ -54,7 +54,7 @@ describe 'iptables::ipv4::chain' do
     context '=> no options' do
       it do
         should contain_concat__fragment('iptables-table-filter-chain-JUNK') \
-          .with( { 'order' => '1_filter_9_JUNK',
+          .with( { 'order' => '1_filter_1_JUNK',
                    'target' => '/etc/sysconfig/iptables',
                    'content' => ":JUNK - [0:0]\n" } )
       end
@@ -64,7 +64,7 @@ describe 'iptables::ipv4::chain' do
       let(:params) { { 'comment' => 'comment here' } }
       it do
         should contain_concat__fragment('iptables-table-filter-chain-JUNK') \
-          .with( { 'order' => '1_filter_9_JUNK',
+          .with( { 'order' => '1_filter_1_JUNK',
                    'target' => '/etc/sysconfig/iptables',
                    'content' => "# comment here\n:JUNK - [0:0]\n" } )
       end
@@ -74,7 +74,7 @@ describe 'iptables::ipv4::chain' do
       let(:params) { { 'policy' => 'drop' } }
       it do
         should contain_concat__fragment('iptables-table-filter-chain-JUNK') \
-          .with( { 'order' => '1_filter_9_JUNK',
+          .with( { 'order' => '1_filter_1_JUNK',
                     'target' => '/etc/sysconfig/iptables',
                     'content' => ":JUNK - [0:0]\n" } )
       end
@@ -84,7 +84,7 @@ describe 'iptables::ipv4::chain' do
       let(:params) { { 'policy' => 'reject' } }
       it do
         should contain_concat__fragment('iptables-table-filter-chain-JUNK') \
-           .with( { 'order' => '1_filter_9_JUNK',
+           .with( { 'order' => '1_filter_1_JUNK',
                     'target' => '/etc/sysconfig/iptables',
                     'content' => ":JUNK - [0:0]\n" } )
       end
@@ -97,7 +97,7 @@ describe 'iptables::ipv4::chain' do
     it do
       expect {
         should contain_concat__fragment('iptables-table-filter-chain--INPUT') \
-            .with( { 'order' => '1_filter_9_-INPUT',
+            .with( { 'order' => '1_filter_1_-INPUT',
                      'target' => '/etc/sysconfig/iptables',
                      'content' => ":-INPUT - [0:0]\n" } )
       }.to raise_error( Puppet::Error, /name cannot/ )

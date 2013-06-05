@@ -49,12 +49,11 @@ define iptables::ipv4::chain (
     $policy_r = upcase( $policy )
     validate_re( $policy_r, '^(ACCEPT|DROP)$',
       "invalid chain policy - ${policy_r}" )
-    $chain_order_arr = [ $table_order, $order['chain'][$name], $name ]
   } else {
     $policy_r = '-'
-    $chain_order_arr = [ $table_order, $order['chain']['other'], $name ]
   }
 
+  $chain_order_arr = [ $table_order, $order['chain']['name'], $name ]
   $chain_order = join( $chain_order_arr, $separator )
 
   $file_content = $comment ? {

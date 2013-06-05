@@ -54,11 +54,12 @@ class iptables (
   $chain_order_width = 1
   $chain_order = {
     table         => 0,
-    'INPUT'       => 1,
-    'OUTPUT'      => 2,
-    'FORWARD'     => 3,
-    'PREROUTING'  => 4,
-    'POSTROUTING' => 5,
+    name          => 1,
+    'INPUT'       => 2,
+    'OUTPUT'      => 3,
+    'FORWARD'     => 4,
+    'PREROUTING'  => 5,
+    'POSTROUTING' => 6,
     other         => 9,
   }
 
@@ -75,6 +76,7 @@ class iptables (
     infra           => 0,
     temp            => 200,
     specific_allow  => 400,
+    'default'         => 500,
     specific_deny   => 600,
     global_allows   => 800,
     catchall_reject => 999,
