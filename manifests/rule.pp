@@ -65,7 +65,7 @@ define iptables::rule (
   $source_port = undef,
   $state = undef,
   $table = undef,
-  $version = undef,
+  $version = undef
 ) {
   include iptables
 
@@ -93,22 +93,14 @@ define iptables::rule (
 
   case $version {
     /(?i-mx:ip(v)?)?4/: {
-      iptables::ipv4::rule { $title:
-        options => $options
-      }
+      iptables::ipv4::rule { $title: options => $options }
     }
     /(?i-mx:ip(v)?)?6/: {
-      iptables::ipv6::rule { $title:
-        options => $options,
-      }
+      iptables::ipv6::rule { $title: options => $options }
     }
     default: {
-      iptables::ipv4::rule { $title:
-        options => $options
-      }
-      iptables::ipv6::rule { $title:
-        options => $options,
-      }
+      iptables::ipv4::rule { $title: options => $options }
+      iptables::ipv6::rule { $title: options => $options }
     }
   }
 }
