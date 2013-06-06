@@ -72,7 +72,10 @@ describe 'iptables_generate_rule' do
                      .and_raise_error( Puppet::ParseError ) }
       it { should run.with_params( { 'incoming_interface' => 'eth1',
                                      'outgoing_interface' => 'eth1',
-                                     'chain' => 'FORWARD' } ) \
+                                     'chain' => 'FORWARD',
+                                     'action' => 'ACCEPT',
+                                     'mod_flags' => { 'chn_FORWARD' => true } \
+                                   } ) \
                      .and_return( [ '-A FORWARD -i eth1 -o eth1 -j ACCEPT' ]) }
     end
 
@@ -113,8 +116,9 @@ describe 'iptables_generate_rule' do
   context "=> IPv6 => valid rules" do
     context "=> allow all traffic" do
       it {
+        input = { 'action' => 'ACCEPT', 'chain' => 'INPUT' }
         output = [ '-A INPUT -j ACCEPT' ]
-        should run.with_params( nil, nil, '6' ).and_return( output )
+        should run.with_params( input, '6' ).and_return( output )
       }
     end
 
@@ -126,11 +130,12 @@ describe 'iptables_generate_rule' do
           'source' => '2600::0/48',
           'destination' => '2601::0/48',
           'state' => 'NEW,REL,EST',
-          'incoming_interface' => 'eth1' }
+          'incoming_interface' => 'eth1',
+          'action' => 'ACCEPT',
+          'chain' => 'INPUT' }
         output = [ "-A INPUT -i eth1 -s 2600::0/48 -d 2601::0/48 -p tcp " \
           + "--dport 22 -j ACCEPT" ]
-        should run.with_params( input, nil, '6' )  \
-                .and_return( output )
+        should run.with_params( input, '6' ).and_return( output )
       }
     end
     
@@ -143,10 +148,9 @@ describe 'iptables_generate_rule' do
           'incoming_interface' => 'eth1',
           'destination_port' => '22',
         }
-        defaults = { }
         output = [ "-A INPUT -i eth1 -s 2600::0/48 -p tcp --dport 22 " \
           + "-j ACCEPT" ]
-        should run.with_params( options, defaults, '6' ).and_return(output)
+        should run.with_params( options, '6' ).and_return(output)
       }
     end
 
@@ -183,10 +187,11 @@ describe 'iptables_generate_rule' do
       it {
         options = { 'incoming_interface' => 'eth1',
                     'outgoing_interface' => 'eth1',
-                    'chain' => 'FORWARD' }
-        defaults = { }
+                    'chain' => 'FORWARD',
+                    'action' => 'ACCEPT',
+                    'mod_flags' => { 'chn_FORWARD' => true } }
         output = [ '-A FORWARD -i eth1 -o eth1 -j ACCEPT' ]
-        should run.with_params(options,defaults,'6').and_return(output)
+        should run.with_params(options,'6').and_return(output)
       }
     end
 

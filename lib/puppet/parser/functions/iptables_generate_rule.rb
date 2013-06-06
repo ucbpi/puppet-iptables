@@ -14,7 +14,6 @@ EOS
 
     opt = args[0]
 
-    # default to IP Version 4
     version = '4'
     version = String(args[1])[-1].chr \
       if String(args[1]) =~ /(?i-mx:(ip)?(v)?(4|6))/
