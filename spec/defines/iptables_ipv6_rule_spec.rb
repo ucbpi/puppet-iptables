@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'iptables::ipv4::rule' do
+describe 'iptables::ipv6::rule' do
   let(:facts) { { :concat_basedir => '/var/lib/puppet/concat' } }
 
   context "allow ssh from world" do
@@ -9,10 +9,11 @@ describe 'iptables::ipv4::rule' do
                                     'protocol' => 'tcp' } } }
 
     it do
+      should contain_iptables__ipv6__chain('INPUT')
       should contain_concat__fragment(
-        'iptables-table-filter-chain-INPUT-rule-allow ssh from world' ) \
+        'ip6tables-table-filter-chain-INPUT-rule-allow ssh from world' ) \
         .with( { 'order' => '1_filter_2_INPUT_500',
-                  'target' => '/etc/sysconfig/iptables',
+                  'target' => '/etc/sysconfig/ip6tables',
                   'content' => "-A INPUT -p tcp --dport 22 -j ACCEPT\n" } )
     end
   end
@@ -24,10 +25,11 @@ describe 'iptables::ipv4::rule' do
                                     'chain' => 'ADMIN',
                                     'order' => '100' } } }
     it do
+      should contain_iptables__ipv6__chain('ADMIN')
       should contain_concat__fragment(
-        'iptables-table-filter-chain-ADMIN-rule-allow ssh on admin chain' ) \
+        'ip6tables-table-filter-chain-ADMIN-rule-allow ssh on admin chain' ) \
         .with( { 'order' => '1_filter_9_ADMIN_100',
-                'target' => '/etc/sysconfig/iptables',
+                'target' => '/etc/sysconfig/ip6tables',
                 'content' => "-A ADMIN -p tcp --dport 22 -j ACCEPT\n" } )
     end
   end
@@ -35,17 +37,18 @@ describe 'iptables::ipv4::rule' do
   context "certain address jump to ADMIN chain" do
     let(:title) { 'admin-jump' }
     let(:params) { { 'options' => { 
-      'source' => '192.168.0.0/24,192.168.1.0/24',
+      'source' => 'dead:beef::/120,dead:bead::/125',
       'action' => 'ADMIN',
       'order' => '25' } } }
 
     it do
+      should contain_iptables__ipv6__chain('INPUT')
       should contain_concat__fragment(
-        'iptables-table-filter-chain-INPUT-rule-admin-jump' ) \
+        'ip6tables-table-filter-chain-INPUT-rule-admin-jump' ) \
         .with( { 'order' => '1_filter_2_INPUT_025',
-                  'target' => '/etc/sysconfig/iptables',
-                  'content' => "-A INPUT -s 192.168.0.0/24 -j ADMIN\n" + \
-                               "-A INPUT -s 192.168.1.0/24 -j ADMIN\n" } )
+                  'target' => '/etc/sysconfig/ip6tables',
+                  'content' => "-A INPUT -s dead:beef::/120 -j ADMIN\n" + \
+                               "-A INPUT -s dead:bead::/125 -j ADMIN\n" } )
     end
   end
 end
