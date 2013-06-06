@@ -23,7 +23,7 @@ describe 'iptables_generate_rule' do
         }
         output = [
           "-A INPUT -i eth1 -s 10.0.1.0/24 -d 10.0.0.0/8 -p tcp --dport 22 " \
-          + "-j ACCEPT" ]
+          + "-m state --state NEW,REL,EST -j ACCEPT" ]
 
         should run.with_params( input ) \
                 .and_return( output )
@@ -134,7 +134,7 @@ describe 'iptables_generate_rule' do
           'action' => 'ACCEPT',
           'chain' => 'INPUT' }
         output = [ "-A INPUT -i eth1 -s 2600::0/48 -d 2601::0/48 -p tcp " \
-          + "--dport 22 -j ACCEPT" ]
+          + "--dport 22 -m state --state NEW,REL,EST -j ACCEPT" ]
         should run.with_params( input, '6' ).and_return( output )
       }
     end
@@ -149,7 +149,7 @@ describe 'iptables_generate_rule' do
           'destination_port' => '22',
         }
         output = [ "-A INPUT -i eth1 -s 2600::0/48 -p tcp --dport 22 " \
-          + "-j ACCEPT" ]
+          + "-m state --state NEW,REL,EST -j ACCEPT" ]
         should run.with_params( options, '6' ).and_return(output)
       }
     end

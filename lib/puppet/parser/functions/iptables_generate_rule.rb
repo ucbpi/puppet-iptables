@@ -114,6 +114,7 @@ EOS
         rule.push('-m multiport') if flg['multiport']
         rule.push(spt)
         rule.push(dpt)
+        rule.push(ste)
         rule.push(raw)
         rule.push(act)
         rule.push(log) if flg['act_LOG']
