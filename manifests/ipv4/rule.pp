@@ -15,9 +15,7 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
   $separator = $iptables::join_separator
   $rule_width = $iptables::rule_order_width
 
-  notice("\nnotice: before parse - ${options['source']}")
   $opt = iptables_parse_options( $options, $defaults , '4' )
-  notice("\nnotice: after parse - ${opt['source']}")
   if $opt['table'] =~ /^[a-z]$/ {
     $table = $opt['table']
   } else {
