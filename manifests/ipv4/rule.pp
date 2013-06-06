@@ -30,7 +30,7 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
 
   # setup our chain if not done already.  let it handle
   # setting up our table
-  $chain_res = Iptables::Ipv4::Chain['INPUT']
+  $chain_res = Iptables::Ipv4::Chain[$chain]
   if ! defined ( $chain_res ) { iptables::ipv4::chain{ $chain: } }
 
   $builtin = $iptables::ipv4::builtin_chains[$table]

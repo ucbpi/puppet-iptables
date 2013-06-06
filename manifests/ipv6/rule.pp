@@ -31,7 +31,7 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
 
   # setup our chain if not done already.  let it handle
   # setting up our table
-  $chain_res = Iptables::Ipv6::Chain['INPUT']
+  $chain_res = Iptables::Ipv6::Chain['ADMIN']
   if ! defined ( $chain_res ) {
     iptables::ipv6::chain{ $chain: }
   }
