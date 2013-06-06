@@ -82,6 +82,7 @@ protocol.
     destination_port => '25',
     destination      => '10.0.10.10,10.0.10.11,2001:db8:1001::10/126',
     action           => 'ACCEPT',
+    chain            => 'OUTPUT',
   }
 
   iptables::rule { 'restrict-outbound-smtp':
@@ -89,6 +90,7 @@ protocol.
     priority         => '999',
     destination_port => '25',
     action           => 'REJECT',
+    chain            => 'OUTPUT,
   }
 </code></pre>
  
