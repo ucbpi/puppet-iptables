@@ -58,6 +58,7 @@ define iptables::rule (
   $limit_burst = undef,
   $outgoing_interface = undef,
   $order = undef,
+  $priority = undef,
   $protocol = undef,
   $raw = undef,
   $reject_with = undef,
@@ -69,6 +70,16 @@ define iptables::rule (
 ) {
   include iptables
 
+
+  # we renamed priority to order, but lets allow priority to be used unless
+  # order is specified
+  if $order == undef and $priority != undef {
+    notice ('DEPRECATED: "priority" parameter is now "order"')
+    $order_r = $priority
+  } else {
+    $order_r = $order
+  }
+
   $options = {
     'action'             => $action,
     'chain'              => $chain,
@@ -79,6 +90,7 @@ define iptables::rule (
     'log_prefix'         => $log_prefix,
     'limit'              => $limit,
     'limit_burst'        => $limit_burst,
+    'order'              => $order_r,
     'outgoing_interface' => $outgoing_interface,
     'protocol'           => $protocol,
     'raw'                => $raw,
