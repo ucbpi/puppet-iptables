@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/arusso/puppet-iptables.png?branch=issues/3_ip6tables_support)](https://travis-ci.org/arusso/puppet-iptables)
+[![Build Status](https://travis-ci.org/arusso/puppet-iptables.png?branch=issues/3)](https://travis-ci.org/arusso/puppet-iptables)
 
 # iptables Module #
 
