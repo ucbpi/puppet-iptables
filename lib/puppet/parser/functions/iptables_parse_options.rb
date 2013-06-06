@@ -5,7 +5,7 @@ EOS
     Puppet::Parser::Functions.function('iptables_prep_option')
 
     options = { }
-    options = args[0] if args[1].is_a?(Hash)
+    options = args[0] if args[0].is_a?(Hash)
 
     defaults = { }
     defaults = args[1] if args[1].is_a?(Hash)
@@ -127,8 +127,9 @@ EOS
     options['state'] = function_iptables_prep_option( ste_input )
 
     # finally, we return our options after pruning empty ones
-    options.delete_if { |opt,val| val=='' }
+    options.delete_if { |opt,val| val=='' or val == nil or val == :undef }
     options['mod_flags'] = mod_flags
+
     return options
   end
 end

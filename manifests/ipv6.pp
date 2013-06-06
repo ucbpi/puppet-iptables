@@ -11,6 +11,12 @@ class iptables::ipv6 {
   $order = $iptables::order
   $table_order_width = $iptables::table_order_width
 
+  $builtin_chains = {
+    filter => [ 'INPUT', 'FORWARD', 'OUTPUT' ],
+    mangle => [ 'PREROUTING', 'OUTPUT', 'INPUT', 'FORWARD', 'POSTROUTING' ],
+    raw    => [ 'PREROUTING', 'OUTPUT' ],
+  }
+
   ########
   # iptables
   #

@@ -9,21 +9,23 @@
 # A hash table of all the options available to the rule
 #
 define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
-  include iptables
   include iptables::ipv4
 
   $order = $iptables::order
   $separator = $iptables::join_separator
   $rule_width = $iptables::rule_order_width
 
-  if $options['table'] =~ /[a-z]/ {
-    $table = $options['table']
+  notice("\nnotice: before parse - ${options['source']}")
+  $opt = iptables_parse_options( $options, $defaults , '4' )
+  notice("\nnotice: after parse - ${opt['source']}")
+  if $opt['table'] =~ /^[a-z]$/ {
+    $table = $opt['table']
   } else {
     $table = 'filter'
   }
 
-  if $options['chain'] =~ /^[^-].*$/ {
-    $chain = $options['chain']
+  if $opt['chain'] =~ /^[^- ].+$/ {
+    $chain = $opt['chain']
   } else {
     $chain = 'INPUT'
   }
@@ -31,12 +33,10 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
   # setup our chain if not done already.  let it handle
   # setting up our table
   $chain_res = Iptables::Ipv4::Chain['INPUT']
-  if ! defined ( $chain_res ) {
-    iptables::ipv4::chain{ $chain: }
-  }
+  if ! defined ( $chain_res ) { iptables::ipv4::chain{ $chain: } }
 
   $builtin = $iptables::ipv4::builtin_chains[$table]
-  $rule = join( iptables_generate_rule( $options, $defaults, '4' ), "\n" )
+  $rule = join( iptables_generate_rule( $opt, '4' ), "\n" )
 
   $table_order_arr = [ $order['table'][$table], $table ]
   $table_order = join( $table_order_arr, $separator )
@@ -47,8 +47,8 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
   }
   $chain_order = join( $chain_order_arr, $separator )
 
-  $rule_order = $options['order'] ? {
-    /^[0-9]+$/ => lead( $options['order'], $rule_width ),
+  $rule_order = $opt['order'] ? {
+    /^[0-9]+$/ => lead( $opt['order'], $rule_width ),
     default    => lead( $order['rule']['default'], $rule_width ),
   }
 

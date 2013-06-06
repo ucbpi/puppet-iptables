@@ -23,18 +23,22 @@ Example:
   opt4_val = iptables_prep_option( 'opt4', vals, defs, default )
   EOS
 ) do |args|
-    vals = { }
-    defs = { }
     name = args[0]
-    vals = args[1] unless args[1] == nil
-    defs = args[2] unless args[2] == nil
+    
+    vals = { }
+    vals = args[1] if args[1].is_a?(Hash)
+
+    defs = { }
+    defs = args[2] if args[2].is_a?(Hash)
+
+
     default = ''
-    default = args[3] unless ! args[3]
+    default = args[3] unless args[3] == nil or args[3] == :undef
 
     # just run through the values
     ret = default
-    ret = defs[name] unless ! defs[name]
-    ret = vals[name] unless ! vals[name]
+    ret = defs[name] unless defs[name] == nil or defs[name] == :undef
+    ret = vals[name] unless vals[name] == nil or vals[name] == :undef
 
     return ret
   end

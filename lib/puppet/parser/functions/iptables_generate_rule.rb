@@ -1,6 +1,6 @@
 module Puppet::Parser::Functions
   newfunction(:iptables_generate_rule, :type => :rvalue, :doc => <<-EOS
-Provided an array of options, generates iptables rule(s) 
+Provided an array of options, generates iptables rule(s).
 EOS
 ) do |args|
     Puppet::Parser::Functions.function('iptables_parse_options')
@@ -12,22 +12,18 @@ EOS
     Puppet::Parser::Functions.function('format_protocol')
     Puppet::Parser::Functions.function('format_state')
 
-    options = { }
-    options = args[0] if args[0].is_a?(Hash)
-
-    defaults = { }
-    defaults = args[1] if args[1].is_a?(Hash)
+    opt = args[0]
 
     # default to IP Version 4
     version = '4'
-    version = String(args[2])[-1].chr \
-      if String(args[2]) =~ /(?i-mx:(ip)?(v)?(4|6))/
+    version = String(args[1])[-1].chr \
+      if String(args[1]) =~ /(?i-mx:(ip)?(v)?(4|6))/
 
     raise Puppet::Error, "invalid version detected - #{version}" \
       unless version =~ /(4|6)/
 
-    opt = function_iptables_parse_options( [ options, defaults, version ] )
-    flg = opt['mod_flags']
+    flg = { }
+    flg = opt['mod_flags'] if opt['mod_flags'].is_a?(Hash)
     flg.default=false
 
     # addresses are arrays that should always have at least one object, even if
@@ -56,11 +52,11 @@ EOS
     # hash of values.  we'll also only format if the act_LOG flag is set,
     # otherwise these options are useless
     log_opts = {
-      'log_ip_options' => options['log_ip_options'],
-      'log_level' => options['log_level'],
-      'log_prefix' => options['log_prefix'],
-      'log_tcp_options' => options['log_tcp_options'],
-      'log_tcp_sequence' => options['log_tcp_sequence'],
+      'log_ip_opt' => opt['log_ip_opt'],
+      'log_level' => opt['log_level'],
+      'log_prefix' => opt['log_prefix'],
+      'log_tcp_opt' => opt['log_tcp_opt'],
+      'log_tcp_sequence' => opt['log_tcp_sequence'],
     }
     log = function_format_log( [ log_opts ] ) if flg['act_LOG']
 
@@ -70,6 +66,10 @@ EOS
       + " FWD=#{flg['chn_FORWARD']}, out=#{out_int}, in=#{in_int}" \
       if out_int != '' and in_int != '' and ! flg['chn_FORWARD']
 
+    raise Puppet::Error,
+      "something broke. we should have a valid CHAIN by this point" \
+      if chn == ''
+
     #
     ## begin processing
     #
@@ -77,7 +77,7 @@ EOS
 
     # lets handle the comments first
     comment_line_width = 80
-    comment = options['comment']
+    comment = opt['comment']
     if comment != nil 
       prepend = "# "
       comment_width = comment_line_width - prepend.length
@@ -95,7 +95,7 @@ EOS
 
     # allow users to pass rule rule code through, without being
     # tampered with
-    raw = options['raw']
+    raw = opt['raw']
 
     src.each do |s|
       # we'll store our pieces here, and join() them later

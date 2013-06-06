@@ -4,13 +4,16 @@ describe 'iptables_generate_rule' do
   context "=> IPv4 => valid rules" do
     context "=> allow all traffic" do
       it {
-        should run.with_params(nil,nil,'4').and_return(['-A INPUT -j ACCEPT']) 
+        input = { 'action' => 'ACCEPT', 'chain' => 'INPUT' }
+        should run.with_params(input,'4').and_return(['-A INPUT -j ACCEPT']) 
       }
     end
 
     context "=> allow ssh from subnet with int and src/dest set" do
       it {
         input = { 
+          'chain' => 'INPUT',
+          'action' => 'ACCEPT',
           'destination_port' => '22',
           'destination' => '10.0.0.0/8',
           'incoming_interface' => 'eth1',
@@ -30,6 +33,8 @@ describe 'iptables_generate_rule' do
     context "=> allow ssh from specific source and interface" do
       it {  
         input = {
+          'chain' => 'INPUT',
+          'action' => 'ACCEPT',
           'destination_port' => '22',
           'protocol' => 'tcp',
           'source' => '10.0.1.0/24', 
@@ -42,7 +47,7 @@ describe 'iptables_generate_rule' do
 
     context "=> allow all output" do
       it {
-        input = { 'chain' => 'OUTPUT' }
+        input = { 'chain' => 'OUTPUT', 'action' => 'ACCEPT' }
         output = [ '-A OUTPUT -j ACCEPT' ]
         should run.with_params( input ).and_return( output )
       }
@@ -50,7 +55,11 @@ describe 'iptables_generate_rule' do
 
     context "=> only allow sport 80 to connect to dport 80,443" do
       it {
-        input = { 'destination_port' => '80,443', 'source_port' => '80' }
+        input = {
+          'destination_port' => '80,443',
+          'source_port' => '80',
+          'action' => 'ACCEPT',
+          'chain' => 'INPUT' }
         output = [ "-A INPUT -m multiport --sport 80 --dports 80,443 " \
                  + "-j ACCEPT" ]
         should run.with_params(input).and_return(output)
@@ -88,7 +97,9 @@ describe 'iptables_generate_rule' do
       it {
         input = { 'protocol' => 'tcp',
                   'destination_port' => '32768:61000',
-                  'raw' => '! --syn' }
+                  'raw' => '! --syn',
+                  'action' => 'ACCEPT',
+                  'chain' => 'INPUT' }
 
         should run.with_params( input ) \
                   .and_return( [ "-A INPUT -p tcp --dport 32768:61000 ! " \

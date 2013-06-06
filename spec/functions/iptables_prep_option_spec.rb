@@ -2,62 +2,80 @@ require 'spec_helper'
 
 describe 'iptables_prep_option' do
 
-  vals = { 'option_one' => 'value_one', 'option_two' => 'value_two' }
-  defs = {
-    'option_two' => 'defs_value_two',
-    'option_three' => 'defs_value_three'
-  }
+  vals = { 'opt1' => 'val1', 'opt2' => 'val2' }
+  defs = { 'opt2' => 'dval2', 'opt3' => 'dval3'}
 
-  # Test value hash precdence
+  # Test value hash precedence
   context '=> test value hash precedence' do
     context '=> no default, no hard-coded default' do
-      out = 'value_one'
-      it { should run.with_params('option_one',vals,defs).and_return( out ) }
+      it {
+        out = 'val1'
+        should run.with_params('opt1',vals,defs).and_return( out )
+      }
     end
 
     context '=> no default, with hard-coded default' do
-      out = 'value_one'
-      it { should run.with_params('option_one',vals,defs,-1).and_return( out )}
+      it {
+        out = 'val1'
+        should run.with_params('opt1',vals,defs,-1).and_return( out )
+      }
     end
 
     context '=> with default, no hard-coded default' do
-      out = 'value_two'
-      it { should run.with_params('option_two',vals,defs).and_return( out ) }
+      it {
+        out = 'val2'
+        should run.with_params('opt2',vals,defs).and_return( out )
+      }
     end
 
     context '=> with default, with hard-coded default' do
-      out = 'value_two'
-      it { should run.with_params('option_two',vals,defs,-1).and_return( out )}
+      it {
+        out = 'val2'
+        should run.with_params('opt2',vals,defs,-1).and_return( out )
+      }
     end
   end
 
   # Test defaults hash
   context '=> test defaults hash precedence' do
-    out = 'defs_value_three'
 
     context '=> without hard-coded default' do
-      it { should run.with_params('option_three',vals,defs).and_return( out ) }
+      it {
+        out = 'dval3'
+        should run.with_params('opt3',vals,defs).and_return( out )
+      }
     end
 
     context '=> with hard-coded default' do
-      it { should run.with_params('option_three',vals,defs,-1).and_return( out )}
+      it {
+        out = 'dval3'
+        should run.with_params('opt3',vals,defs,-1).and_return( out )
+      }
     end
   end
 
   # Test hard-coded defaults
   context '=> test hard-coded default' do
     context '=> none-specified' do
-      out = ""
-      it { should run.with_params('option_four',vals,defs).and_return( out ) }
+      it {
+        out = ""
+        should run.with_params('opt4',vals,defs).and_return( out )
+      }
     end
 
     context '=> -1 specified' do
-      out = -1
-      it { should run.with_params('option_four',vals,defs,-1).and_return( out ) }
+      it {
+        out = -1
+        should run.with_params('opt4',vals,defs,-1).and_return( out )
+      }
     end
   end
 
   context "=> test with no defaults specified" do
-    it { should run.with_params('option_four',vals,nil,-1).and_return(-1) }
+    it { should run.with_params('opt4',vals,:undef,-1).and_return(-1) }
+  end
+
+  context "=> test with no defaults specified" do
+    it { should run.with_params('opt4',vals,nil,-1).and_return(-1) }
   end
 end
