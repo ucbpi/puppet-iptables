@@ -11,6 +11,12 @@ describe 'format_action' do
     }
   end
 
+  context '=> Pass undef' do
+    it {
+      should run.with_params(:undef).and_raise_error(Puppet::ParseError)
+    }
+  end
+
   context '=> Pass nil' do
     it {
       should run.with_params(nil).and_raise_error(Puppet::ParseError)

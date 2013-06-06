@@ -38,7 +38,7 @@ Examples:
       '6' => [ 'tcp', 'udp', 'icmpv6', 'esp', 'all' ]
     }
 
-    return '' if args == nil
+    return '' if args == nil or args[0] == :undef
 
     protocol = ''
     protocol = args[0].dup unless args[0] == nil

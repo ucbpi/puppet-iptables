@@ -19,6 +19,7 @@ Examples:
 ) do |args|
     raise Puppet::ParseError, "no chain specified" if args == nil
 
+    chain = 'INPUT'
     chain = args[0] unless args[0] == nil
 
     # Do some validation here

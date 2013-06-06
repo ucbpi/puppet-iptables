@@ -12,6 +12,10 @@ describe 'format_state' do
     it { should run.with_params('NOPE').and_raise_error(Puppet::ParseError) }
   end
 
+  context '=> Pass undef (undef in puppet)' do
+    it { should run.with_params(:undef).and_return('') }
+  end
+
   context '=> Pass nil (undef in puppet)' do
     it { should run.with_params(nil).and_return('') }
   end

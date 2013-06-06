@@ -28,7 +28,7 @@ Examples:
     Puppet::Parser::Functions.function('warning')
 
     states = ""
-    states = args[0].dup unless args[0] == nil
+    states = args[0].dup unless args[0] == nil or args[0] == :undef
     valid = [ 'NEW', 'REL', 'EST', 'INV' ]
 
     states = states.split(',') unless states.kind_of?(Array)

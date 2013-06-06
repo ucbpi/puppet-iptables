@@ -39,12 +39,12 @@ Examples:
     Puppet::Parser::Functions.function('warning')
     
     ports = []
-    ports = args[0] unless args[0] == nil
+    ports = args[0] unless args[0] == nil or args[0] == :undef
     type = "dport"
     type = "sport" if args[1] == "sport"
 
 
-    ports = ports.split(',') unless ports.kind_of?(Array)
+    ports = ports.split(',') if ports.kind_of?(String)
     ports.uniq!
 
     # special case -- we weren't given an empty array or string

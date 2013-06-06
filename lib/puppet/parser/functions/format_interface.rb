@@ -8,10 +8,10 @@ module Puppet::Parser::Functions
     in_rx = /^in(coming)?$/i
     int_rx = /^[a-z0-9\.\-_]+\+?$/i
 
-    return '' if args == nil
+    return '' if args == nil or args[0] == :undef
 
     interface = ''
-    interface = String(args[0]).dup unless args[0] == nil
+    interface = String(args[0]).dup
 
     # make sure we were at least passed a string or nil
     raise Puppet::ParseError, "non-string interface passed - #{interface}" \

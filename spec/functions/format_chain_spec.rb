@@ -18,4 +18,8 @@ describe 'format_chain' do
   context '=> Pass nil chain' do
     it { should run.with_params(nil).and_raise_error(Puppet::ParseError) }
   end
+
+  context '=> Pass undef chain' do
+    it { should run.with_params(:undef).and_raise_error(Puppet::ParseError) }
+  end
 end

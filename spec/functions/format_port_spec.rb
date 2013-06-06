@@ -52,7 +52,18 @@ describe 'format_port' do
     }
     it { should run.with_params(input,'sport').and_return(output) }
   end
-  context "=> send nil (undef)" do
+
+  context "=> send undef" do
+    it {
+      input = :undef
+      output = {
+        'port' => '',
+        'multiport' => false,
+      }
+      should run.with_params(input,'sport').and_return(output)
+    }
+  end
+  context "=> send nil" do
     it {
       input = nil
       output = {

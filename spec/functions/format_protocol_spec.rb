@@ -34,6 +34,10 @@ describe 'format_protocol' do
     it { should run.with_params( '' ).and_return( '' ) }
   end
 
+  context "=> test with undef passed" do
+    it { should run.with_params( :undef ).and_return('') }
+  end
+  
   context "=> test with nil passed" do
     it { should run.with_params( nil ).and_return('') }
   end
