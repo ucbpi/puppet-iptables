@@ -70,7 +70,6 @@ define iptables::rule (
 ) {
   include iptables
 
-
   # we renamed priority to order, but lets allow priority to be used unless
   # order is specified
   if $order == undef and $priority != undef {
@@ -79,6 +78,8 @@ define iptables::rule (
   } else {
     $order_r = $order
   }
+
+  $ips = split_ip_by_version($source)
 
   $options = {
     'action'             => $action,
@@ -95,18 +96,62 @@ define iptables::rule (
     'protocol'           => $protocol,
     'raw'                => $raw,
     'reject_with'        => $reject_with,
-    'source'             => $source,
+    'source'             => $ips['4'],
     'source_port'        => $source_port,
     'state'              => $state,
     'table'              => $table,
   }
 
+  $options6 = {
+    'action'             => $action,
+    'chain'              => $chain,
+    'destination'        => $destination,
+    'destination_port'   => $destination_port,
+    'incoming_interface' => $incoming_interface,
+    'log_level'          => $log_level,
+    'log_prefix'         => $log_prefix,
+    'limit'              => $limit,
+    'limit_burst'        => $limit_burst,
+    'order'              => $order_r,
+    'outgoing_interface' => $outgoing_interface,
+    'protocol'           => $protocol,
+    'raw'                => $raw,
+    'reject_with'        => $reject_with,
+    'source'             => $ips['6'],
+    'source_port'        => $source_port,
+    'state'              => $state,
+    'table'              => $table,
+  }
+
+  # only generate rules for a particular protocol if either:
+  # 1. both protocols have 0 addresses specified
+  # 2. the protocol in question has more than 0 addresses specified
+  $diff = size($ips['4']) - size($ips['6'])
+  if $diff >= 0 { $gen4 = true }
+  else { $gen4 = false }
+
+  if $diff <= 0 { $gen6 = true }
+  else { $gen6 = false }
+
   case $version {
-    /(?i-mx:ip(v)?)?4/: { iptables::ipv4::rule { $title: options => $options } }
-    /(?i-mx:ip(v)?)?6/: { iptables::ipv6::rule { $title: options => $options } }
+    /(?i-mx:ip(v)?)?4/: {
+      # ensure we're managing at least the ipv4 file
+      include iptables::ipv4
+      if $gen4 { iptables::ipv4::rule { $title: options => $options } }
+    }
+
+    /(?i-mx:ip(v)?)?6/: {
+      include iptables::ipv6
+      if $gen6 { iptables::ipv6::rule { $title: options => $options6 } }
+    }
+
     default: {
-      iptables::ipv4::rule { $title: options => $options }
-      iptables::ipv6::rule { $title: options => $options }
+      # ensure we're managing the proper files
+      include iptables::ipv4
+      include iptables::ipv6
+
+      if $gen4 { iptables::ipv4::rule { $title: options => $options } }
+      if $gen6 { iptables::ipv6::rule { $title: options => $options6 } }
     }
   }
 }

@@ -41,7 +41,7 @@ class iptables::ipv6 {
     order   => $header_order,
   }
 
-  # This is used to ensure consistent join separators when generating the order
-  # for the concat fragments
-  $join_separator = '_'
+  # ensure we have at least the filter table defined, so if no rules are defined
+  # we can restart the firewall without errors
+  iptables::ipv6::table { 'filter': }
 }
