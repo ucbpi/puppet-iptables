@@ -1,3 +1,8 @@
+2013-06-07 Aaron Russo <arusso@berkeley.edu> - 0.9.2
+* bugfixes only
+fixed:
+* reject_with parameter has no affect (Issue #10)
+
 2013-06-06 Aaron Russo <arusso@berkeley.edu> - 0.9.1
 * bugfixes only
 fixed:
