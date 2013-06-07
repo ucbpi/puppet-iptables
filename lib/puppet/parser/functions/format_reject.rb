@@ -2,17 +2,11 @@ module Puppet::Parser::Functions
   newfunction(:format_reject, :type => :rvalue,:doc => <<-EOS
   EOS
 ) do |args|
-    Puppet::Parser::Functions.function('warning')
-    Puppet::Parser::Functions.function('notice')
-
     rej = ''
     rej = args[0] if args[0].is_a?(String)
 
     ver = '4'
     ver = args[1][-1].chr if args[1][-1].chr == '6'
-
-    function_notice(["ver: #{ver}"])
-    function_notice(["#{args[1][-1].chr}"])
 
     return rej if rej == ''
 
@@ -51,7 +45,6 @@ module Puppet::Parser::Functions
 
     if ( ver == '4' and valid_rejects['6'].include?(rej) ) or
        ( ver == '6' and valid_rejects['4'].include?(rej) ) then
-       function_notice(["ver: #{ver}"])
        rej = translations[rej]
     end
     return "--reject-with #{rej}"

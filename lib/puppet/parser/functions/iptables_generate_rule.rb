@@ -48,7 +48,6 @@ EOS
     proto = function_format_protocol( [ opt['protocol'], version ] )
     ste = function_format_state( [ opt['state'] ] )
     rej = function_format_reject( [ opt['reject_with'], version ] )
-    notice("rej: #{rej}, #{opt['reject_with']}")
 
     # logging options are all formatted in one function, so we'll pass in a
     # hash of values.  we'll also only format if the act_LOG flag is set,
