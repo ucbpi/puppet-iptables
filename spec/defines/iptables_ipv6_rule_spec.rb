@@ -51,4 +51,27 @@ describe 'iptables::ipv6::rule' do
                                "-A INPUT -s dead:bead::/125 -j ADMIN\n" } )
     end
   end
+
+  # tests for:
+  #   https://github.com/arusso/puppet-iptables/issues/7
+  #   https://github.com/arusso/puppet-iptables/issues/10
+  context "supply comment and reject_with parameter" do
+    let(:title) { 'reject-all' }
+    let(:params) { { 'options' => {
+      'action' => 'REJECT',
+      'comment' => 'reject all other traffic',
+      'order' => '999',
+      'reject_with' => 'icmp6-adm-prohibited'
+    } } }
+
+    it do
+      output = { 
+        'order' => '1_filter_2_INPUT_999',
+        'target' => '/etc/sysconfig/ip6tables',
+        'content' => "# reject all other traffic\n" + \
+                     "-A INPUT -j REJECT --reject-with icmp6-adm-prohibited\n" }
+      should contain_concat__fragment(
+        'ip6tables-table-filter-chain-INPUT-rule-reject-all').with( output )
+    end
+  end
 end

@@ -48,4 +48,27 @@ describe 'iptables::ipv4::rule' do
                                "-A INPUT -s 192.168.1.0/24 -j ADMIN\n" } )
     end
   end
+
+  # tests for:
+  #   https://github.com/arusso/puppet-iptables/issues/7
+  #   https://github.com/arusso/puppet-iptables/issues/10
+  context "supply comment and reject_with parameter" do
+    let(:title) { 'reject-all' }
+    let(:params) { { 'options' => {
+      'action' => 'REJECT',
+      'comment' => 'reject all other traffic',
+      'order' => '999',
+      'reject_with' => 'icmp-admin-prohibited',
+    } } }
+
+    it do
+      output = { 
+        'order' => '1_filter_2_INPUT_999',
+        'target' => '/etc/sysconfig/iptables',
+        'content' => "# reject all other traffic\n" + \
+                    "-A INPUT -j REJECT --reject-with icmp-admin-prohibited\n" }
+      should contain_concat__fragment(
+        'iptables-table-filter-chain-INPUT-rule-reject-all').with( output )
+    end
+  end
 end

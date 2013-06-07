@@ -10,6 +10,7 @@ EOS
     Puppet::Parser::Functions.function('format_interface')
     Puppet::Parser::Functions.function('format_port')
     Puppet::Parser::Functions.function('format_protocol')
+    Puppet::Parser::Functions.function('format_reject')
     Puppet::Parser::Functions.function('format_state')
 
     opt = args[0]
@@ -46,6 +47,8 @@ EOS
     out_int = function_format_interface( [ opt['outgoing_interface'], 'out' ] )
     proto = function_format_protocol( [ opt['protocol'], version ] )
     ste = function_format_state( [ opt['state'] ] )
+    rej = function_format_reject( [ opt['reject_with'], version ] )
+    notice("rej: #{rej}, #{opt['reject_with']}")
 
     # logging options are all formatted in one function, so we'll pass in a
     # hash of values.  we'll also only format if the act_LOG flag is set,
@@ -118,6 +121,7 @@ EOS
         rule.push(raw)
         rule.push(act)
         rule.push(log) if flg['act_LOG']
+        rule.push(rej) if flg['act_REJECT']
         rule.compact!
         rule.delete('')
       end
