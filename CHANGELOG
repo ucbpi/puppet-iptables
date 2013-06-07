@@ -1,3 +1,9 @@
+2013-06-06 Aaron Russo <arusso@berkeley.edu> - 0.9.0
+* major rewrite of code
+* group entries by table AND chain (Issue #2)
+* ip6tables support (Issue #3)
+* move logic out of template (Issue #6)
+
 2013-04-30 Aaron Russo <arusso@berkeley.edu> - 0.0.2
 * Improve RegEx validation code and fix bug with source port (ajacques)
 

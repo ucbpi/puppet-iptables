@@ -1,6 +1,6 @@
 # iptables Firewall Module #
 
-[![Build Status](https://travis-ci.org/arusso/puppet-iptables.png?branch=issues/3)](https://travis-ci.org/arusso/puppet-iptables)
+[![Build Status](https://travis-ci.org/arusso/puppet-iptables.png?branch=master)](https://travis-ci.org/arusso/puppet-iptables)
 
 This is yet another iptables module for Puppet.  It supports both IPv4 and IPv6
 and tries to maintain compatibility with iptables/ip6tables v1.3.5 and above.
