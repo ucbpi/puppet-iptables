@@ -43,5 +43,6 @@ class iptables::ipv6 {
 
   # ensure we have at least the filter table defined, so if no rules are defined
   # we can restart the firewall without errors
-  iptables::ipv6::table { 'filter': }
+  $filter_table_obj = Iptables::Ipv6::Table['filter']
+  if ! defined( $filter_table_obj ) { iptables::ipv6::table { 'filter': } }
 }
