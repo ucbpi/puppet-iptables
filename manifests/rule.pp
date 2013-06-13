@@ -127,12 +127,19 @@ define iptables::rule (
   # only generate rules for a particular protocol if either:
   # 1. both protocols have 0 addresses specified
   # 2. the protocol in question has more than 0 addresses specified
-  $diff = size($ips['4']) - size($ips['6'])
-  if $diff >= 0 { $gen4 = true }
-  else { $gen4 = false }
-
-  if $diff <= 0 { $gen6 = true }
-  else { $gen6 = false }
+  if size($ips['4']) > 0 and size($ips['6']) == 0 {
+    # we only apply iptables rules
+    $gen4 = true
+    $gen6 = false
+  } elsif size($ips['6']) > 0 and size($ips['4']) == 0 {
+    # we only apply ip6tables rules
+    $gen4 = false
+    $gen6 = true
+  } else {
+    # we apply both
+    $gen4 = true
+    $gen6 = true
+  }
 
   case $version {
     /(?i-mx:ip(v)?)?4/: {
