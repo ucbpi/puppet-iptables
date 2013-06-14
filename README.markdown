@@ -29,7 +29,7 @@ chain.
 
 Rules assume only three defaults -- the default table is `filter`,the default
 chain is `INPUT` and the default action is `ACCEPT`.  So creating an empty rule
-will always result in the rule "-A INPUT -j ACCEPT" being generated in the
+will always result in the rule `-A INPUT -j ACCEPT` being generated in the
 `filter` table.
 
 The module also takes into account when IPv6 address are supplied, and will
@@ -40,61 +40,58 @@ then to discover later that your rule only partially applied.
 
 ## Examples ##
 
-The following rules will create a chain ADMIN in addition to the INPUT and
-OUTPUT chains, and will place any incoming packets from $admin_network onto the
-ADMIN chain for processing.  Admins should be allowed $admin_ports over tcp
-protocol.
+The following rules will create a chain `ADMIN` in addition to the `INPUT` and
+`OUTPUT` chains, and will place any incoming packets from `$admin_network` onto
+the `ADMIN` chain for processing.  Admins should be allowed `$admin_ports` over
+tcp protocol.
 
-<pre><code>
-
-  Iptables::Rule {
-    protocol => 'tcp',
-  }
-
-  $admin_network = '10.0.0.0/24,2001:db8:1000::/64'
-  $admin_ports = '22,636,5666'
-
-  iptables::rule { 'allow admin ssh':
-    comment          => 'Allow admin workstations to connect to admin ports',
-    priority         => '100',
-    destination_port => $admin_ports,
-    chain            => 'ADMIN',
-  }
-
-  iptables::rule { 'SA network jumps to ADMIN chain':
-    comment          => 'SA workstations should traverse the ADMIN chain',
-    priority         => '10',
-    destination_port => '22',
-    action           => 'ADMIN',
-    source           => $admin_network,
-  }
-
-  iptables::rule { 'allow-puppet-local':
-    comment          => 'Reject SSH from all other workstations',
-    priority         => '150',
-    destination_port => '22',
-    action           => 'REJECT',
-  }
- 
-  # place some outbound restrictions
-  iptables::rule { 'allow-outbound-smtp':
-    comment          => 'only allow smtp to our internal mail servers',
-    priority         => '500',
-    destination_port => '25',
-    destination      => '10.0.10.10,10.0.10.11,2001:db8:1001::10/126',
-    action           => 'ACCEPT',
-    chain            => 'OUTPUT',
-  }
-
-  iptables::rule { 'restrict-outbound-smtp':
-    comment          => 'do not allow any further smtp outbound',
-    priority         => '999',
-    destination_port => '25',
-    action           => 'REJECT',
-    chain            => 'OUTPUT,
-  }
-</code></pre>
- 
+    $admin_network = '10.0.0.0/24,2001:db8:1000::/64'
+    $admin_ports = '22,636,5666'
+  
+    iptables::rule { 'allow admin ssh':
+      comment          => 'Allow admin workstations to connect to admin ports',
+      order            => '100',
+      protocol         => 'tcp',
+      destination_port => $admin_ports,
+      chain            => 'ADMIN',
+    }
+  
+    iptables::rule { 'SA network jumps to ADMIN chain':
+      comment          => 'SA workstations should traverse the ADMIN chain',
+      order            => '10',
+      destination_port => '22',
+      protocol         => 'tcp',
+      action           => 'ADMIN',
+      source           => $admin_network,
+    }
+  
+    iptables::rule { 'allow-puppet-local':
+      comment          => 'Reject SSH from all other workstations',
+      order            => '150',
+      destination_port => '22',
+      protocol         => 'tcp',
+      action           => 'REJECT',
+    }
+   
+    # place some outbound restrictions
+    iptables::rule { 'allow-outbound-smtp':
+      comment          => 'only allow smtp to our internal mail servers',
+      order            => '500',
+      destination_port => '25',
+      protocol         => 'tcp',
+      destination      => '10.0.10.10,10.0.10.11,2001:db8:1001::10/126',
+      action           => 'ACCEPT',
+      chain            => 'OUTPUT',
+    }
+  
+    iptables::rule { 'restrict-outbound-smtp':
+      comment          => 'do not allow any further smtp outbound',
+      order            => '999',
+      destination_port => '25',
+      protocol         => 'tcp',
+      action           => 'REJECT',
+      chain            => 'OUTPUT,
+    }
 
 License
 -------
