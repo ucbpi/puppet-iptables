@@ -109,6 +109,20 @@ describe 'iptables_generate_rule' do
                                  + "--syn -j ACCEPT" ] )
       }
     end                                
+
+    context "=> test log prefix" do
+      it do
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '32768:61000',
+                  'action' => 'LOG',
+                  'log_prefix' => 'LogPkt: ',
+                  'mod_flags' => { 'act_LOG' => true } }
+        output = [ "-A INPUT -p tcp --dport 32768:61000 -j LOG --log-prefix " \
+          + "\"LogPkt: \"" ]
+        should run.with_params(input, '4') \
+          .and_return(output)
+      end
+    end
   end
 
   # Test ip6tables rule generation below
@@ -222,5 +236,19 @@ describe 'iptables_generate_rule' do
                                  + "--syn -j ACCEPT" ] )
       }
     end                                
+
+    context "=> test log prefix" do
+      it do
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '32768:61000',
+                  'action' => 'LOG',
+                  'log_prefix' => 'LogPkt: ',
+                  'mod_flags' => { 'act_LOG' => true } }
+        output = [ "-A INPUT -p tcp --dport 32768:61000 -j LOG --log-prefix " \
+          + "\"LogPkt: \"" ]
+        should run.with_params(input, '6') \
+          .and_return(output)
+      end
+    end
   end
 end

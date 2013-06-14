@@ -25,18 +25,18 @@ describe 'format_log' do
   context "=> log_prefix passed" do
     it {
       input = { 'log_prefix' => 'InPkt: ' }
-      output = "--log-prefix 'InPkt: '"
+      output = "--log-prefix \"InPkt: \""
       should run.with_params(input).and_return(output)
     }
     it {
       input = { 'log_prefix' => 'Drop Packet: ' }
-      output = "--log-prefix 'Drop Packet: '"
+      output = "--log-prefix \"Drop Packet: \""
       should run.with_params(input).and_return(output)
     }
     context "=> 29 chars cutoff" do
       it {
         input = { 'log_prefix' => 'Something Something Something Something' }
-        output = "--log-prefix 'Something Something Something'"
+        output = "--log-prefix \"Something Something Something\""
         should run.with_params(input).and_return(output)
       }
     end

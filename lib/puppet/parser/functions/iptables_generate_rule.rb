@@ -8,6 +8,7 @@ EOS
     Puppet::Parser::Functions.function('split_ip_by_version')
     Puppet::Parser::Functions.function('format_chain')
     Puppet::Parser::Functions.function('format_interface')
+    Puppet::Parser::Functions.function('format_log')
     Puppet::Parser::Functions.function('format_port')
     Puppet::Parser::Functions.function('format_protocol')
     Puppet::Parser::Functions.function('format_reject')

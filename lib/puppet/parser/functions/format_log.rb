@@ -64,7 +64,7 @@ format_log( options ):
       # do nothing
     elsif logprefix.size > 0
       # push the first 29 characters, giving a warning if we trimmed some
-      log_opts.push("--log-prefix '" + logprefix.scan(/^.{1,29}/)[0] + "'")
+      log_opts.push("--log-prefix \"" + logprefix.scan(/^.{1,29}/)[0] + "\"")
       function_warning(["log prefix \"#{logprefix}\" exceeds 29 characters." \
                       + " Truncating chars beyond 29"]) if logprefix.size > 29
     end
