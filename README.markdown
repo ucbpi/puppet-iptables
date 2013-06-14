@@ -27,9 +27,10 @@ The foundation of this module is understanding every rule has an order, from
 000-999, and that the rules will be placed in ascending order in the specified
 chain.
 
-Rules assume only two defaults -- the default chain is INPUT and the default
-action is ACCEPT.  So creating an empty rule will always result in the rule
-"-A INPUT -j ACCEPT" being generated.
+Rules assume only three defaults -- the default table is `filter`,the default
+chain is `INPUT` and the default action is `ACCEPT`.  So creating an empty rule
+will always result in the rule "-A INPUT -j ACCEPT" being generated in the
+`filter` table.
 
 The module also takes into account when IPv6 address are supplied, and will
 generate IPv6 rules accordingly.  If you specify options that are only valid
