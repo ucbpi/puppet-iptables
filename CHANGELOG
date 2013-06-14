@@ -1,3 +1,6 @@
+2013-06-14 Aaron Russo <arusso@berkeley.edu> - 0.9.4
+* fixed issue where using log_prefix could generate an invalid rule
+
 2013-06-13 Aaron Russo <arusso@berkeley.edu> - 0.9.3
 * fixed error in logic that didnt have rules applying in certain cases
 

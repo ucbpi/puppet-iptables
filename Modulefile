@@ -1,5 +1,5 @@
 name 'arusso-iptables'
-version '0.9.3'
+version '0.9.4'
 summary "iptables management"
 description "iptables management module that updates the iptables save file,
   without changing the running state of iptables."
