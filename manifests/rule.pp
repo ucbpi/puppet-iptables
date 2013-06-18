@@ -106,6 +106,7 @@ define iptables::rule (
   $options6 = {
     'action'             => $action,
     'chain'              => $chain,
+    'comment'            => $comment,
     'destination'        => $destination,
     'destination_port'   => $destination_port,
     'incoming_interface' => $incoming_interface,
