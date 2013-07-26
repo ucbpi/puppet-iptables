@@ -17,10 +17,6 @@ manifests_dir = '../../../../manifests'
 #
 # Setup our fixtures directory to ensure we are ready for testing
 task :setup do
-  # setup our submodules
-  %x[git submodule init]
-  %x[git submodule update]
-
   # setup our fixtures
   if !File.exist?("#{module_fixtures_dir}")
     FileUtils.mkdir("#{module_fixtures_dir}")
@@ -29,6 +25,7 @@ task :setup do
   if !File.exist?("#{module_fixtures_dir}/manifests")
     Dir.chdir(module_fixtures_dir)
     File.symlink(manifests_dir,'manifests')
+    Dir.chdir(module_root)
   end
 end
 
@@ -50,12 +47,19 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = 'spec/*/*_spec.rb'
 end
 
-task :pack do
-  %x[puppet module package ./]
+task :sub do
+  %x[git submodule init]
+  %x[git submodule update]
+end
+
+task :build do
+  Rake::Task["teardown_all"].invoke
+  %x[puppet module build ./]
+  Rake::Task["setup"].invoke
+  # we always leave the symlink out
+  Rake::Task["teardown"].invoke
 end
 
 task :test => [:setup,:spec,:teardown]
 
 task :default => [:test]
-
-task :package => [:teardown_all,:pack,:setup,:teardown]
