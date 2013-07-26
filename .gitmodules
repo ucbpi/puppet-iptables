@@ -3,7 +3,7 @@
 	url = git://github.com/ripienaar/puppet-concat
 [submodule "spec/fixtures/modules/oski"]
 	path = spec/fixtures/modules/oski
-	url = git@github.com:arusso/puppet-oski
+	url = git://github.com/arusso/puppet-oski
 [submodule "spec/fixtures/modules/stdlib"]
 	path = spec/fixtures/modules/stdlib
 	url = git://github.com/puppetlabs/puppetlabs-stdlib
