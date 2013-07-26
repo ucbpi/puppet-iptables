@@ -1,3 +1,7 @@
+2014-07-25 Aaron Russo <arusso@berkeley.edu> - 0.9.5
+* issues 14 - multiple destination addresses generated bad rules
+* issue #13 - symlinks break puppetdoc
+
 2013-06-14 Aaron Russo <arusso@berkeley.edu> - 0.9.4
 * fixed issue where using log_prefix could generate an invalid rule
 
