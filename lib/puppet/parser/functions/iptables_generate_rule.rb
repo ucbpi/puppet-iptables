@@ -75,6 +75,9 @@ EOS
     #
     ## begin processing
     #
+
+    # we will store our rules and comments in this array and return it when
+    # we are all done
     rules = [ ]
 
     # lets handle the comments first
@@ -101,13 +104,14 @@ EOS
 
     src.each do |s|
       # we'll store our pieces here, and join() them later
-      rule = []
 
       @src = "-s #{s}" if s != ''
       @src = nil if s == nil or s == ''
       dst.each do |d|
         @dst = "-d #{d}" if d != ''
         @dst = nil if d == nil or d == ''
+
+        rule = [ ]
         rule.push(chn)
         rule.push(in_int)
         rule.push(out_int)
@@ -124,9 +128,8 @@ EOS
         rule.push(rej) if flg['act_REJECT']
         rule.compact!
         rule.delete('')
+        rules.push(rule.join(' '))
       end
-
-      rules.push(rule.join(' '))
     end
     return rules
   end

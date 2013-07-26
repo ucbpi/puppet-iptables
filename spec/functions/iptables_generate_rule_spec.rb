@@ -123,6 +123,34 @@ describe 'iptables_generate_rule' do
           .and_return(output)
       end
     end
+
+    context "=> test multiple source addresses" do
+      it do
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '25',
+                  'action' => 'REJECT',
+                  'source' => [ '10.0.0.1', '10.0.0.2' ],
+                  'chain' => 'OUTPUT' }
+        output = [ "-A OUTPUT -s 10.0.0.1 -p tcp --dport 25 -j REJECT",
+                   "-A OUTPUT -s 10.0.0.2 -p tcp --dport 25 -j REJECT" ]
+        should run.with_params(input, '4') \
+          .and_return(output)
+      end
+    end
+
+    context "=> test multiple destination addresses" do
+      it do
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '25',
+                  'action' => 'REJECT',
+                  'destination' => [ '10.0.0.1', '10.0.0.2' ],
+                  'chain' => 'OUTPUT' }
+        output = [ "-A OUTPUT -d 10.0.0.1 -p tcp --dport 25 -j REJECT",
+                   "-A OUTPUT -d 10.0.0.2 -p tcp --dport 25 -j REJECT" ]
+        should run.with_params(input, '4') \
+          .and_return(output)
+      end
+    end
   end
 
   # Test ip6tables rule generation below
@@ -246,6 +274,34 @@ describe 'iptables_generate_rule' do
                   'mod_flags' => { 'act_LOG' => true } }
         output = [ "-A INPUT -p tcp --dport 32768:61000 -j LOG --log-prefix " \
           + "\"LogPkt: \"" ]
+        should run.with_params(input, '6') \
+          .and_return(output)
+      end
+    end
+
+    context "=> test multiple source addresses" do
+      it do
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '25',
+                  'action' => 'REJECT',
+                  'source' => [ '2600::0/48', '2601::0/48' ],
+                  'chain' => 'OUTPUT' }
+        output = [ "-A OUTPUT -s 2600::0/48 -p tcp --dport 25 -j REJECT",
+                   "-A OUTPUT -s 2601::0/48 -p tcp --dport 25 -j REJECT" ]
+        should run.with_params(input, '6') \
+          .and_return(output)
+      end
+    end
+
+    context "=> test multiple destination addresses" do
+      it do
+        input = { 'protocol' => 'tcp',
+                  'destination_port' => '25',
+                  'action' => 'REJECT',
+                  'destination' => [ '2600::0/48', '2601::0/48' ],
+                  'chain' => 'OUTPUT' }
+        output = [ "-A OUTPUT -d 2600::0/48 -p tcp --dport 25 -j REJECT",
+                   "-A OUTPUT -d 2601::0/48 -p tcp --dport 25 -j REJECT" ]
         should run.with_params(input, '6') \
           .and_return(output)
       end
