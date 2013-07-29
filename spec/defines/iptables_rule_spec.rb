@@ -76,4 +76,17 @@ describe 'iptables::rule' do
       should_not contain_iptables__ipv4
     }
   end
+
+  context '=> allow outbound v4' do
+    let(:title) { 'allow outbound v4' }
+    let(:params) {
+      { 'destination' => [ '4.2.2.1', '4.2.2.2' ],
+        'destination_port' => [ '80', '443' ],
+        'protocol' => 'tcp' } }
+
+    it {
+      should contain_iptables__ipv4__rule('allow outbound v4')
+      should_not contain_iptables__ipv6__rule('allow outbound v4')
+    }
+  end
 end
