@@ -1,5 +1,12 @@
-2014-07-25 Aaron Russo <arusso@berkeley.edu> - 0.9.5
-* issues 14 - multiple destination addresses generated bad rules
+2013-07-29 Aaron Russo <arusso@berkeley.edu> - 0.9.6
+* issue #15 - travis-ci integration is broken
+* issue #16 - rules containing ipv4 hosts are creating match-all ipv6 rules
+* Added LICENSE and Copyright information
+* Added testing for Puppet 3.x
+* Removed testing for Puppet 2.6
+
+2013-07-25 Aaron Russo <arusso@berkeley.edu> - 0.9.5
+* issue #14 - multiple destination addresses generated bad rules
 * issue #13 - symlinks break puppetdoc
 
 2013-06-14 Aaron Russo <arusso@berkeley.edu> - 0.9.4
