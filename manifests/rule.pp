@@ -80,12 +80,13 @@ define iptables::rule (
   }
 
   $ips = split_ip_by_version($source)
+  $ipd = split_ip_by_version($destination)
 
   $options = {
     'action'             => $action,
     'chain'              => $chain,
     'comment'            => $comment,
-    'destination'        => $destination,
+    'destination'        => $ipd['4'],
     'destination_port'   => $destination_port,
     'incoming_interface' => $incoming_interface,
     'log_level'          => $log_level,
@@ -107,7 +108,7 @@ define iptables::rule (
     'action'             => $action,
     'chain'              => $chain,
     'comment'            => $comment,
-    'destination'        => $destination,
+    'destination'        => $ipd['6'],
     'destination_port'   => $destination_port,
     'incoming_interface' => $incoming_interface,
     'log_level'          => $log_level,
@@ -128,11 +129,13 @@ define iptables::rule (
   # only generate rules for a particular protocol if either:
   # 1. both protocols have 0 addresses specified
   # 2. the protocol in question has more than 0 addresses specified
-  if size($ips['4']) > 0 and size($ips['6']) == 0 {
+  $v4_count = size($ips['4']) + size($ipd['4'])
+  $v6_count = size($ips['6']) + size($ipd['6'])
+  if $v4_count > 0 and $v6_count == 0 {
     # we only apply iptables rules
     $gen4 = true
     $gen6 = false
-  } elsif size($ips['6']) > 0 and size($ips['4']) == 0 {
+  } elsif $v6_count > 0 and $v4_count == 0 {
     # we only apply ip6tables rules
     $gen4 = false
     $gen6 = true
