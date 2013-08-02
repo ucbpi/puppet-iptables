@@ -131,6 +131,7 @@ define iptables::rule (
   # 2. the protocol in question has more than 0 addresses specified
   $v4_count = size($ips['4']) + size($ipd['4'])
   $v6_count = size($ips['6']) + size($ipd['6'])
+  $other_count = size($ips['other']) + size($ipd['other'])
   if $v4_count > 0 and $v6_count == 0 {
     # we only apply iptables rules
     $gen4 = true
@@ -139,10 +140,15 @@ define iptables::rule (
     # we only apply ip6tables rules
     $gen4 = false
     $gen6 = true
+  } elsif $other_count > 0 and $v4_count ==0 and $v6_count == 0 {
+    fail("${title} - only invalid ip addresses specified.")
   } else {
     # we apply both
     $gen4 = true
     $gen6 = true
+    if $other_count > 0 {
+      warning { "${title} - invalid IPs detected and will be skipped": }
+    }
   }
 
   case $version {

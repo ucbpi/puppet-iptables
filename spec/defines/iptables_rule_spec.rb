@@ -102,4 +102,22 @@ describe 'iptables::rule' do
       should_not contain_iptables__ipv4__rule('allow outbound v6')
     }
   end
+  context '=> all invalid ips' do
+    let(:title) { 'invalid ips' }
+    let(:params) { { 'destination' => [ '10.0.0.256', '2001::1/129' ] } }
+    it do
+      expect {
+        should_not contain_iptables__ipv4__rule('invalid ips')
+        should_not contain_iptables__ipv6__rule('invalid ips')
+      }.to raise_error(Puppet::Error, /invalid ip/)
+    end
+  end
+  context '=> all valid ips' do
+    let(:title) { 'all valid ips' }
+    let(:params) { { 'destination' => [ '10.0.0.254', '2001::1/128' ] } }
+    it do
+      should contain_iptables__ipv4__rule('all valid ips')
+      should contain_iptables__ipv6__rule('all valid ips')
+    end
+  end
 end
