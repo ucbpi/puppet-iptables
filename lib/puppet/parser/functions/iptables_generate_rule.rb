@@ -72,7 +72,7 @@ EOS
       "something broke. we should have a valid CHAIN by this point" \
       if chn == ''
 
-    raise Puppet::Error,
+    raise Puppet::ParseError,
       "protocol required if a source or destination port is provided" \
       if ( spt != '' or dpt != '' ) and proto == ''
 

@@ -59,8 +59,9 @@ describe 'iptables_generate_rule' do
           'destination_port' => '80,443',
           'source_port' => '80',
           'action' => 'ACCEPT',
+          'protocol' => 'tcp',
           'chain' => 'INPUT' }
-        output = [ "-A INPUT -m multiport --sport 80 --dports 80,443 " \
+        output = [ "-A INPUT -p tcp -m multiport --sport 80 --dports 80,443 " \
                  + "-j ACCEPT" ]
         should run.with_params(input).and_return(output)
       }
@@ -151,6 +152,17 @@ describe 'iptables_generate_rule' do
           .and_return(output)
       end
     end
+
+    context "=> error if destination_port specified, but not protocol" do
+      it do 
+        options = { 'destination_port' => '22' }
+        defaults = { }
+        expect {
+          should run.with_params( options, defaults, '4' ).and_return([ ])
+        }.to raise_error(Puppet::ParseError, /protocol required/)
+      end
+    end
+
   end
 
   # Test ip6tables rule generation below
@@ -209,10 +221,11 @@ describe 'iptables_generate_rule' do
       it {
         options = {
         'source_port' => '80',
-        'destination_port' => '80,443'
+        'destination_port' => '80,443',
+        'protocol' => 'tcp',
         }
         defaults = { }
-        output = [ "-A INPUT -m multiport --sport 80 --dports 80,443 " \
+        output = [ "-A INPUT -p tcp -m multiport --sport 80 --dports 80,443 " \
                  + "-j ACCEPT" ]
         should run.with_params( options, defaults, '6' ).and_return( output )
       }
@@ -304,6 +317,16 @@ describe 'iptables_generate_rule' do
                    "-A OUTPUT -d 2601::0/48 -p tcp --dport 25 -j REJECT" ]
         should run.with_params(input, '6') \
           .and_return(output)
+      end
+    end
+
+    context "=> error if destination_port specified, but not protocol" do
+      it do 
+        options = { 'destination_port' => '22' }
+        defaults = { }
+        expect {
+          should run.with_params( options, defaults, '6' ).and_return([ ])
+        }.to raise_error(Puppet::ParseError, /protocol required/)
       end
     end
   end
