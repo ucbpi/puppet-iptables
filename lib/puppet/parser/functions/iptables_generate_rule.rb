@@ -46,7 +46,8 @@ EOS
     chn = function_format_chain( [ opt['chain'] ] )
     in_int = function_format_interface( [ opt['incoming_interface'], 'in' ] )
     out_int = function_format_interface( [ opt['outgoing_interface'], 'out' ] )
-    proto = function_format_protocol( [ opt['protocol'], version ] )
+    proto = function_format_protocol( [ opt['protocol'], version, 
+                                        opt['strict_protocol_checking'] ] )
     ste = function_format_state( [ opt['state'] ] )
     rej = function_format_reject( [ opt['reject_with'], version ] )
 

@@ -1,15 +1,26 @@
 module Puppet::Parser::Functions
   newfunction(:format_protocol, :type => :rvalue,:doc => <<-EOS
 format_protocol( protocol [, version ])
+Formats the protocol portion of an iptable rule.
 
-Given a protocol name and ip protocol version (4 or 6), returns the partial
-iptables rule to faciliate the matching on this protocol
+Takes 3 optional arguments as input:
+  String:  protocol name, defaults to 'all'
+  String:  protocol version, default to '4'
+  Boolean: strict protocol checking, defaults to 'true'
 
-If not specified, ip protocol version defaults to 4.
+Beyond formatting the protocol component, this function also does some sanity
+checking to make it difficult to pass a bad protocol value.  If strict is left
+set to 'true', this function will verify the protocol is one of the protocols
+baked into iptables/ip6tables.
 
 Valid protocols for each ip version:
   4: 'tcp', 'udp', 'udplite', 'icmp', 'esp', 'ah', 'sctp', 'all'
   6: 'tcp', 'udp', 'icmpv6', 'esp', 'all'
+
+Alternatively, you can pass an integer value representing the protocol type.
+
+Passing 'false' as argument 3, will allow you to specify any string/integer
+combination.
 
 Examples:
 
@@ -28,6 +39,14 @@ Examples:
   format_protocol(undef)
   format_protocol('')
 
+  # returns '-p eigrp'
+  format_protocol('eigrp',4,false)
+  format_protocol('eigrp',6,false)
+
+  # returns '-p 88'
+  format_protocol('88',4)
+  format_protocol('88',6)
+
   # parse error
   format_protocol('proto')
   format_protocol('proto',6)
@@ -44,6 +63,8 @@ Examples:
     protocol = args[0].dup unless args[0] == nil
     version = '4'
     version = '6' if String(args[1]) =~ /(ip(v)?)?6/i
+    strict = true
+    strict = false if args[2] == false
 
     return protocol if protocol == ''
 
@@ -51,9 +72,13 @@ Examples:
     # a ipv6 protocol
     protocol = 'icmpv6' if version == '6' and protocol == 'icmp'
 
-    # do some basic validation of the protocol
-    raise Puppet::ParseError, "invalid protocol - #{protocol}" \
-      unless protocols[version].include?(protocol)  
+    # if we disabled strict_protocol_checking, or if we set our protocol to an
+    # integer, don't worry about verifying the protocol exists in our lists
+    if strict and not protocol =~ /^[0-9]+$/
+      # do some basic validation of the protocol
+       raise Puppet::ParseError, "invalid protocol - #{protocol}" \
+         unless protocols[version].include?(protocol)  
+    end
 
     return "-p #{protocol}"
   end
