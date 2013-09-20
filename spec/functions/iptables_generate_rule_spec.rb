@@ -163,6 +163,30 @@ describe 'iptables_generate_rule' do
       end
     end
 
+    context "=> block protocol 88 traffic" do
+      it {
+        options = { 'protocol' => '88',
+                    'action' => 'REJECT' }
+        defaults = { }
+        output = [ '-A INPUT -p 88 -j REJECT' ]
+        expect {
+          should run.with_params( options, defaults, '4' ).and_return(output)
+        }
+      }
+    end
+    context "=> disable strict protocol checking, and block eigrp traffic" do
+      it {
+        options = { 'strict_protocol_checking' => false,
+                    'protocol' => 'eigrp',
+                    'action' => 'REJECT' }
+        defaults = { }
+        output = [ '-A INPUT -p eigrp -j REJECT' ]
+        expect {
+          should run.with_params( options, defaults, '4' ).and_return(output)
+        }
+      }
+    end
+
   end
 
   # Test ip6tables rule generation below
@@ -328,6 +352,31 @@ describe 'iptables_generate_rule' do
           should run.with_params( options, defaults, '6' ).and_return([ ])
         }.to raise_error(Puppet::ParseError, /protocol required/)
       end
+    end
+
+    context "=> block protocol 88 traffic" do
+      it {
+        options = { 'protocol' => '88',
+                    'action' => 'REJECT' }
+        defaults = { }
+        output = [ '-A INPUT -p 88 -j REJECT' ]
+        expect {
+          should run.with_params( options, defaults, '6' ).and_return(output)
+        }
+      }
+    end
+
+    context "=> disable strict protocol checking, and block eigrp traffic" do
+      it {
+        options = { 'strict_protocol_checking' => false,
+                    'protocol' => 'eigrp',
+                    'action' => 'REJECT' }
+        defaults = { }
+        output = [ '-A INPUT -p eigrp -j REJECT' ]
+        expect {
+          should run.with_params( options, defaults, '6' ).and_return(output)
+        }
+      }
     end
   end
 end

@@ -4,6 +4,12 @@
 #
 # === Parameters
 #
+# [*action*]
+#
+# Determines what action should occur on match.  Default is to ACCEPT.
+# Valid values are:
+#   ACCEPT, REJECT, LOG and any other valid CHAIN name.
+#
 # [*comment*]
 #
 # Optional value to be placed in the rule file as a comment, so reading
@@ -39,11 +45,16 @@
 # Match rule on particular states. Valid states are:
 #   RELATED, ESTABLISHED, NEW
 #
-# [*action*]
+# [*strict_protocol_checking*]
 #
-# Determines what action should occur on match.  Default is to ACCEPT.
-# Valid values are:
-#   ACCEPT, REJECT, LOG and any other valid CHAIN name.
+# When set to true, protocols other than those baked into iptables/ip6tables
+# must be specified by their IP Protocol number.
+#
+# When set to false any protocol name can be specified that exists in
+# /etc/protocols on the node the rule is applied on. Puppet does not check to
+# ensure the existance of protocols in /etc/protocols.
+#
+# Default is true
 #
 define iptables::rule (
   $action = undef, # accept, reject, etc
@@ -65,6 +76,7 @@ define iptables::rule (
   $source = undef,
   $source_port = undef,
   $state = undef,
+  $strict_protocol_checking = undef,
   $table = undef,
   $version = undef
 ) {
@@ -83,47 +95,49 @@ define iptables::rule (
   $ipd = split_ip_by_version($destination)
 
   $options = {
-    'action'             => $action,
-    'chain'              => $chain,
-    'comment'            => $comment,
-    'destination'        => $ipd['4'],
-    'destination_port'   => $destination_port,
-    'incoming_interface' => $incoming_interface,
-    'log_level'          => $log_level,
-    'log_prefix'         => $log_prefix,
-    'limit'              => $limit,
-    'limit_burst'        => $limit_burst,
-    'order'              => $order_r,
-    'outgoing_interface' => $outgoing_interface,
-    'protocol'           => $protocol,
-    'raw'                => $raw,
-    'reject_with'        => $reject_with,
-    'source'             => $ips['4'],
-    'source_port'        => $source_port,
-    'state'              => $state,
-    'table'              => $table,
+    'action'                   => $action,
+    'chain'                    => $chain,
+    'comment'                  => $comment,
+    'destination'              => $ipd['4'],
+    'destination_port'         => $destination_port,
+    'incoming_interface'       => $incoming_interface,
+    'log_level'                => $log_level,
+    'log_prefix'               => $log_prefix,
+    'limit'                    => $limit,
+    'limit_burst'              => $limit_burst,
+    'order'                    => $order_r,
+    'outgoing_interface'       => $outgoing_interface,
+    'protocol'                 => $protocol,
+    'raw'                      => $raw,
+    'reject_with'              => $reject_with,
+    'source'                   => $ips['4'],
+    'source_port'              => $source_port,
+    'strict_protocol_checking' => $strict_protocol_checking,
+    'state'                    => $state,
+    'table'                    => $table,
   }
 
   $options6 = {
-    'action'             => $action,
-    'chain'              => $chain,
-    'comment'            => $comment,
-    'destination'        => $ipd['6'],
-    'destination_port'   => $destination_port,
-    'incoming_interface' => $incoming_interface,
-    'log_level'          => $log_level,
-    'log_prefix'         => $log_prefix,
-    'limit'              => $limit,
-    'limit_burst'        => $limit_burst,
-    'order'              => $order_r,
-    'outgoing_interface' => $outgoing_interface,
-    'protocol'           => $protocol,
-    'raw'                => $raw,
-    'reject_with'        => $reject_with,
-    'source'             => $ips['6'],
-    'source_port'        => $source_port,
-    'state'              => $state,
-    'table'              => $table,
+    'action'                   => $action,
+    'chain'                    => $chain,
+    'comment'                  => $comment,
+    'destination'              => $ipd['6'],
+    'destination_port'         => $destination_port,
+    'incoming_interface'       => $incoming_interface,
+    'log_level'                => $log_level,
+    'log_prefix'               => $log_prefix,
+    'limit'                    => $limit,
+    'limit_burst'              => $limit_burst,
+    'order'                    => $order_r,
+    'outgoing_interface'       => $outgoing_interface,
+    'protocol'                 => $protocol,
+    'raw'                      => $raw,
+    'reject_with'              => $reject_with,
+    'source'                   => $ips['6'],
+    'source_port'              => $source_port,
+    'strict_protocol_checking' => $strict_protocol_checking,
+    'state'                    => $state,
+    'table'                    => $table,
   }
 
   # only generate rules for a particular protocol if either:
