@@ -16,7 +16,7 @@ describe 'format_chain' do
   end
 
   context '=> Pass nil chain' do
-    it { should run.with_params(nil).and_raise_error(Puppet::ParseError) }
+    it { should run.with_params(nil).and_return('-A INPUT') }
   end
 
   context '=> Pass undef chain' do
