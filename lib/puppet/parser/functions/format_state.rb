@@ -48,7 +48,9 @@ Examples:
     if to_delete.size > 0 and states.size > 0
       function_warning(["skipping invalid states -- #{to_delete.join(',')}"])
       to_delete.each { |s| states.delete(s) }
-    elsif to_delete.size > 0 and states.size == 0
+    end
+
+    if to_delete.size > 0 and states.size == 0
       raise Puppet::ParseError, "no valid states were passed"
     end
 
