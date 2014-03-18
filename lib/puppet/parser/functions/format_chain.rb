@@ -17,10 +17,13 @@ Examples:
   format_chain('SOME CHAIN')
   EOS
 ) do |args|
-    raise Puppet::ParseError, "no chain specified" if args == nil
-
     chain = 'INPUT'
     chain = args[0] unless args[0] == nil
+
+    if chain == :undef or chain == ''
+      raise Puppet::ParseError, \
+        "chain name cannot be empty"
+    end
 
     # Do some validation here
     if chain =~ /\s/

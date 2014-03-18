@@ -9,13 +9,15 @@ module Puppet::Parser::Functions
     int_rx = /^[a-z0-9\.\-_]+\+?$/i
 
     return '' if args == nil or args[0] == :undef
+    return '' if args[0] == nil
+
+    # make sure we were at least passed a string or nil
+    raise Puppet::ParseError, "non-string interface passed - #{args[0]}" \
+      unless args[0].kind_of?(String)
 
     interface = ''
     interface = String(args[0]).dup
 
-    # make sure we were at least passed a string or nil
-    raise Puppet::ParseError, "non-string interface passed - #{interface}" \
-      unless interface.kind_of?(String)
 
     # handle cases where we weren't passed an interface
     return interface if interface == ''

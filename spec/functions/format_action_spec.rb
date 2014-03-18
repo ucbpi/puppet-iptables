@@ -19,7 +19,7 @@ describe 'format_action' do
 
   context '=> Pass nil' do
     it {
-      should run.with_params(nil).and_raise_error(Puppet::ParseError)
+      should run.with_params(nil).and_return('-j ACCEPT')
     }
   end
 
