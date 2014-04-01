@@ -10,6 +10,10 @@
 # Valid values are:
 #   ACCEPT, REJECT, LOG and any other valid CHAIN name.
 #
+# [*chain*]
+#
+# Chain to create this rule on. Defaults to 'INPUT'
+#
 # [*comment*]
 #
 # Optional value to be placed in the rule file as a comment, so reading
@@ -57,28 +61,28 @@
 # Default is true
 #
 define iptables::rule (
-  $action = undef, # accept, reject, etc
-  $chain = undef, # input, output, forward, etc
-  $comment = undef, # optional - puts a note in the firewall rule file
-  $destination = undef, # destination ip
-  $destination_port = undef, # destination port
-  $incoming_interface = undef, # incoming interface
-  $log_level = undef, # log level
-  $log_prefix = undef, #
-  $limit = undef,
-  $limit_burst = undef,
-  $outgoing_interface = undef,
-  $order = undef,
-  $priority = undef,
-  $protocol = undef,
-  $raw = undef,
-  $reject_with = undef,
-  $source = undef,
-  $source_port = undef,
-  $state = undef,
-  $strict_protocol_checking = undef,
-  $table = undef,
-  $version = undef
+  $action = 'UNSET', # accept, reject, etc
+  $chain = 'UNSET', # input, output, forward, etc
+  $comment = 'UNSET', # optional - puts a note in the firewall rule file
+  $destination = [], # destination ip
+  $destination_port = [], # destination port
+  $incoming_interface = 'UNSET', # incoming interface
+  $log_level = 'UNSET', # log level
+  $log_prefix = 'UNSET', #
+  $limit = 'UNSET',
+  $limit_burst = 'UNSET',
+  $outgoing_interface = 'UNSET',
+  $order = 'UNSET',
+  $priority = 'UNSET',
+  $protocol = 'UNSET',
+  $raw = 'UNSET',
+  $reject_with = 'UNSET',
+  $source = [],
+  $source_port =  [],
+  $state = 'UNSET',
+  $strict_protocol_checking = 'UNSET',
+  $table = 'UNSET',
+  $version = 'UNSET',
 ) {
   include iptables
 
@@ -95,49 +99,49 @@ define iptables::rule (
   $ipd = split_ip_by_version($destination)
 
   $options = {
-    'action'                   => $action,
-    'chain'                    => $chain,
-    'comment'                  => $comment,
+    'action'                   => default2undef( $action ),
+    'chain'                    => default2undef( $chain ),
+    'comment'                  => default2undef( $comment ),
     'destination'              => $ipd['4'],
     'destination_port'         => $destination_port,
-    'incoming_interface'       => $incoming_interface,
-    'log_level'                => $log_level,
-    'log_prefix'               => $log_prefix,
-    'limit'                    => $limit,
-    'limit_burst'              => $limit_burst,
-    'order'                    => $order_r,
-    'outgoing_interface'       => $outgoing_interface,
-    'protocol'                 => $protocol,
-    'raw'                      => $raw,
-    'reject_with'              => $reject_with,
+    'incoming_interface'       => default2undef( $incoming_interface ),
+    'log_level'                => default2undef( $log_level ),
+    'log_prefix'               => default2undef( $log_prefix ),
+    'limit'                    => default2undef( $limit ),
+    'limit_burst'              => default2undef( $limit_burst ),
+    'order'                    => default2undef( $order_r ),
+    'outgoing_interface'       => default2undef( $outgoing_interface ),
+    'protocol'                 => default2undef( $protocol ),
+    'raw'                      => default2undef( $raw ),
+    'reject_with'              => default2undef( $reject_with ),
     'source'                   => $ips['4'],
     'source_port'              => $source_port,
-    'strict_protocol_checking' => $strict_protocol_checking,
-    'state'                    => $state,
-    'table'                    => $table,
+    'strict_protocol_checking' => default2undef( $strict_protocol_checking ),
+    'state'                    => default2undef( $state ),
+    'table'                    => default2undef( $table ),
   }
 
   $options6 = {
-    'action'                   => $action,
-    'chain'                    => $chain,
-    'comment'                  => $comment,
+    'action'                   => default2undef( $action ),
+    'chain'                    => default2undef( $chain ),
+    'comment'                  => default2undef( $comment ),
     'destination'              => $ipd['6'],
     'destination_port'         => $destination_port,
-    'incoming_interface'       => $incoming_interface,
-    'log_level'                => $log_level,
-    'log_prefix'               => $log_prefix,
-    'limit'                    => $limit,
-    'limit_burst'              => $limit_burst,
-    'order'                    => $order_r,
-    'outgoing_interface'       => $outgoing_interface,
-    'protocol'                 => $protocol,
-    'raw'                      => $raw,
-    'reject_with'              => $reject_with,
+    'incoming_interface'       => default2undef( $incoming_interface ),
+    'log_level'                => default2undef( $log_level ),
+    'log_prefix'               => default2undef( $log_prefix ),
+    'limit'                    => default2undef( $limit ),
+    'limit_burst'              => default2undef( $limit_burst ),
+    'order'                    => default2undef( $order_r ),
+    'outgoing_interface'       => default2undef( $outgoing_interface ),
+    'protocol'                 => default2undef( $protocol ),
+    'raw'                      => default2undef( $raw ),
+    'reject_with'              => default2undef( $reject_with ),
     'source'                   => $ips['6'],
     'source_port'              => $source_port,
-    'strict_protocol_checking' => $strict_protocol_checking,
-    'state'                    => $state,
-    'table'                    => $table,
+    'strict_protocol_checking' => default2undef( $strict_protocol_checking ),
+    'state'                    => default2undef( $state ),
+    'table'                    => default2undef( $table ),
   }
 
   # only generate rules for a particular protocol if either:
