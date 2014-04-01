@@ -4,12 +4,12 @@
 #
 # === Parameters:
 #
-# [*file*]
+# [*iptables_file*]
 #
 # The location of the target file where our rules will live.  Defaults to
 # /etc/sysconfig/iptables
 #
-# [*file6*]
+# [*ip6tables_file*]
 #
 # The location of the target file where our ip6tables rules will reside.
 # Defaults to /etc/sysconfig/ip6tables
