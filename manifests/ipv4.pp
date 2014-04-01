@@ -3,9 +3,9 @@
 # Sets up our iptables (ipv4 rules)
 #
 class iptables::ipv4 {
-  include iptables
+  require iptables
 
-  $config = $iptables::config
+  $config = $iptables::iptables_file
   $order = $iptables::order
   $table_order_width = $iptables::table_order_width
 

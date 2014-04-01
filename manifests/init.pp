@@ -15,27 +15,16 @@
 # Defaults to /etc/sysconfig/ip6tables
 #
 class iptables (
-  $iptables_file = undef,
-  $ip6tables_file = undef,
-  $version = undef
+  $iptables_file = '/etc/sysconfig/iptables',
+  $ip6tables_file = '/etc/sysconfig/ip6tables',
 ) {
   include concat::setup
 
   ##############################################################################
   # Parameter Validation
   ##############################################################################
-  $config = $iptables_file ? {
-    undef   => '/etc/sysconfig/iptables',
-    default => $iptables_file,
-  }
-
-  $config6 = $ip6tables_file ? {
-    undef   => '/etc/sysconfig/ip6tables',
-    default => $ip6tables_file,
-  }
-
-  validate_absolute_path( $config )
-  validate_absolute_path( $config6 )
+  validate_absolute_path( $iptables_file )
+  validate_absolute_path( $ip6tables_file )
 
   # This is used to ensure consistent join separators when generating the order
   # for the concat fragments

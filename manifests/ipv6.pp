@@ -3,11 +3,11 @@
 # Sets up our iptables (ipv6 rules)
 #
 class iptables::ipv6 {
-  include iptables
+  require iptables
 
   # We define these at in iptables, so we can limit our entry into the class
   # to just the iptables top-level class, and so we can re-use code.
-  $config = $iptables::config6
+  $config = $iptables::ip6tables_file
   $order = $iptables::order
   $table_order_width = $iptables::table_order_width
 
