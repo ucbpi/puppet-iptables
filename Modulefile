@@ -7,4 +7,4 @@ project_page "https://github.com/arusso/puppet-iptables"
 license "MIT License"
 dependency 'ripienaar/concat', '>= 0.2.0'
 dependency 'puppetlabs/stdlib', '>= 2.6.0'
-dependency 'arusso/oski', '>= 0.0.1'
+dependency 'arusso/oski', '>= 0.0.10'
