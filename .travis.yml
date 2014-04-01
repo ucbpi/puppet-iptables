@@ -9,6 +9,7 @@ branches:
   only:
       - master
       - /^issues\/.*$/
+      - dev
 
 notifications:
   email:
