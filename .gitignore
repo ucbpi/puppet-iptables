@@ -2,3 +2,6 @@ pkg/*
 *.swp
 *.tmp
 spec/fixtures
+# these get in the way of our travis builds
+.ruby-version
+Gemfile.lock
