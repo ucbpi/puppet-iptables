@@ -13,6 +13,7 @@ EOS
     Puppet::Parser::Functions.function('format_protocol')
     Puppet::Parser::Functions.function('format_reject')
     Puppet::Parser::Functions.function('format_state')
+    Puppet::Parser::Functions.function('iptables_format_redirect_to')
 
     opt = args[0]
 
@@ -49,7 +50,7 @@ EOS
     proto = function_format_protocol( [ opt['protocol'], version, 
                                         opt['strict_protocol_checking'] ] )
     ste = function_format_state( [ opt['state'] ] )
-    rej = function_format_reject( [ opt['reject_with'], version ] )
+    rej = function_format_reject( [ opt['reject_with'], version ] ) if flg['act_REJECT']
 
     # logging options are all formatted in one function, so we'll pass in a
     # hash of values.  we'll also only format if the act_LOG flag is set,
@@ -62,6 +63,10 @@ EOS
       'log_tcp_sequence' => opt['log_tcp_sequence'],
     }
     log = function_format_log( [ log_opts ] ) if flg['act_LOG']
+
+    # redirect's can only happen on the nat table
+    red = function_iptables_format_redirect_to( [ opt['redirect_to'] ] ) \
+      if flg['act_REDIRECT'] and opt['table'] == 'nat'
 
     # throw some errors when appropriate
     raise Puppet::ParseError,
@@ -77,6 +82,14 @@ EOS
       "protocol required if a source or destination port is provided" \
       if ( spt != '' or dpt != '' ) and proto == ''
 
+    raise Puppet::ParseError,
+      "REDIRECT action is not valid for IPv6 rules" \
+      if flg['act_REDIRECT'] and version == '6'
+
+    raise Puppet::ParseError,
+      "REDIRECT action is only valid on the nat table" \
+      if opt['table'] != 'nat' and flg['act_REDIRECT']
+
     #
     ## begin processing
     #
@@ -88,7 +101,7 @@ EOS
     # lets handle the comments first
     comment_line_width = 80
     comment = opt['comment']
-    if comment != nil 
+    if comment != nil
       prepend = "# "
       comment_width = comment_line_width - prepend.length
       comments = []
@@ -129,8 +142,10 @@ EOS
         rule.push(ste)
         rule.push(raw)
         rule.push(act)
+        # add our action-specific flags now
         rule.push(log) if flg['act_LOG']
         rule.push(rej) if flg['act_REJECT']
+        rule.push(red) if flg['act_REDIRECT']
         rule.compact!
         rule.delete('')
         rules.push(rule.join(' '))
