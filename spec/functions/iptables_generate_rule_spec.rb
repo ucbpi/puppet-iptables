@@ -5,13 +5,13 @@ describe 'iptables_generate_rule' do
     context "=> allow all traffic" do
       it {
         input = { 'action' => 'ACCEPT', 'chain' => 'INPUT' }
-        should run.with_params(input,'4').and_return(['-A INPUT -j ACCEPT']) 
+        should run.with_params(input,'4').and_return(['-A INPUT -j ACCEPT'])
       }
     end
 
     context "=> allow ssh from subnet with int and src/dest set" do
       it {
-        input = { 
+        input = {
           'chain' => 'INPUT',
           'action' => 'ACCEPT',
           'destination_port' => '22',
@@ -29,9 +29,9 @@ describe 'iptables_generate_rule' do
                 .and_return( output )
       }
     end
-    
+
     context "=> allow ssh from specific source and interface" do
-      it {  
+      it {
         input = {
           'chain' => 'INPUT',
           'action' => 'ACCEPT',
@@ -109,7 +109,7 @@ describe 'iptables_generate_rule' do
                   .and_return( [ "-A INPUT -p tcp --dport 32768:61000 ! " \
                                  + "--syn -j ACCEPT" ] )
       }
-    end                                
+    end
 
     context "=> test log prefix" do
       it do
@@ -373,9 +373,55 @@ describe 'iptables_generate_rule' do
                     'action' => 'REJECT' }
         defaults = { }
         output = [ '-A INPUT -p eigrp -j REJECT' ]
-        expect {
-          should run.with_params( options, defaults, '6' ).and_return(output)
+        should run.with_params( options, defaults, '6' ).and_return(output)
+      }
+    end
+
+    context '=> use REDIRECT action with a v4 rule' do
+      it {
+        options = {
+        'chain' => 'PREROUTING',
+        'action' => 'REDIRECT',
+        'redirect_to' => '8080:8090',
+        'protocol' => 'tcp',
+        'destination_port' => '80:90',
+        'table' => 'nat',
+        'mod_flags' => { 'act_REDIRECT' => true },
         }
+        defaults = { }
+        output = [ '-A PREROUTING -p tcp --dport 80:90 -j REDIRECT --redirect-to 8080:8090' ]
+        should run.with_params( options, defaults, '4' ).and_return(output)
+      }
+    end
+
+    context '=> use REDIRECT action with a v6 rule' do
+      it {
+        options = {
+        'action' => 'REDIRECT',
+        'redirect_to' => '8080:8090',
+        'protocol' => 'tcp',
+        'destination_port' => '80:90',
+        'mod_flags' => { 'act_REDIRECT' => true },
+        }
+        expect {
+          should run.with_params( options, defaults, '6' ).and_raise_error(Puppet::ParseError)
+        }
+      }
+    end
+
+    context '=> use raw_after parameter' do
+      it {
+        options = {
+          'protocol' => 'tcp',
+          'raw_after' => '--redirect-to 80',
+          'action' => 'REDIRECT',
+          'chain' => 'PREROUTING',
+          'table' => 'nat',
+          'destination_port' => '22',
+        }
+        defaults = { }
+        output = [ '-A PREROUTING -p tcp --dport 22 -j REDIRECT --redirect-to 80' ]
+        should run.with_params( options, defaults, '4' ).and_return(output)
       }
     end
   end
