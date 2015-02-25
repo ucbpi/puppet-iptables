@@ -408,5 +408,21 @@ describe 'iptables_generate_rule' do
         }
       }
     end
+
+    context '=> use raw_after parameter' do
+      it {
+        options = {
+          'protocol' => 'tcp',
+          'raw_after' => '--redirect-to 80',
+          'action' => 'REDIRECT',
+          'chain' => 'PREROUTING',
+          'table' => 'nat',
+          'destination_port' => '22',
+        }
+        defaults = { }
+        output = [ '-A PREROUTING -p tcp --dport 22 -j REDIRECT --redirect-to 80' ]
+        should run.with_params( options, defaults, '4' ).and_return(output)
+      }
+    end
   end
 end

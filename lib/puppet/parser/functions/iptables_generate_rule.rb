@@ -119,6 +119,7 @@ EOS
     # allow users to pass rule rule code through, without being
     # tampered with
     raw = opt['raw']
+    raw_after = opt['raw_after']
 
     src.each do |s|
       # we'll store our pieces here, and join() them later
@@ -142,6 +143,7 @@ EOS
         rule.push(ste)
         rule.push(raw)
         rule.push(act)
+        rule.push(raw_after)
         # add our action-specific flags now
         rule.push(log) if flg['act_LOG']
         rule.push(rej) if flg['act_REJECT']
