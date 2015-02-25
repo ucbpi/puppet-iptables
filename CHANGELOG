@@ -1,3 +1,8 @@
+2015-02-25 Aaron Russo <arusso@berkeley.edu> - 1.1.0
+* add raw_after parameter to allow raw text after jump target directive
+* add redirect_to parameter to support --redirect-to directive
+* update module metadata to use metadata.json and remove Modulefile
+
 2013-09-19 Aaron Russo <arusso@berkeley.edu> - 1.0.1
 * issue #18 - add parameter strict_protocol_checking
 
