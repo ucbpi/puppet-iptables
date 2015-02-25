@@ -194,7 +194,7 @@ Create a trivial 'complex' rule that:
 3. Allow `$admin_network` to access `$admin_ports`
 4. Reject `$admin_ports` from non-Admin systems
 
-```pupppet
+```puppet
     $admin_network = '10.0.0.0/24,2001:db8:1000::/64'
     $admin_ports = '22,636,5666'
     iptables::rule { 'allow admin ssh':
