@@ -1,32 +1,27 @@
 require 'spec_helper'
 
 describe 'iptables_format_to_port' do
-  context "=> tests with a single port" do
-    it { should run.with_params('8080') \
-      .and_return( '--to-port 8080' ) }
+  %w{8080 8080:8089 ssh ssh:http}.each do |port|
+    context "=> redirect to #{port}" do
+      it do
+        should run.with_params(port).and_return("--to-port #{port}")
+      end
+    end
   end
 
-  context "=> tests with a port range" do
-    it { should run.with_params('8080:8089') \
-      .and_return( '--to-port 8080:8089' ) }
+  %w{80000}.each do |port|
+    context "=> invalid redirect to #{port}" do
+      it do
+        should run.with_params(port).and_raise_error(Puppet::ParseError)
+      end
+    end
   end
 
-  context "=> test string ports" do
-    it {
-      should run.with_params('ssh:http').and_return('--to-port ssh:http')
-    }
-  end
-
-  context "=> test an invalid port (too high)" do
-    it {
-      should run.with_params('80000').and_raise_error(Puppet::ParseError)
-    }
-  end
-
-  context "=> send undef" do
-    it { should run.with_params(:undef).and_return('') }
-  end
-  context "=> send nil" do
-    it { should run.with_params(nil).and_return('') }
+  [ :undef, nil ].each do |port|
+    context "=> empty value #{port.to_s}" do
+      it do
+        should run.with_params(port).and_return('')
+      end
+    end
   end
 end

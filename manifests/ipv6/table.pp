@@ -30,4 +30,14 @@ define iptables::ipv6::table {
     order   => $table_order_r,
     content => "*${name}\n",
   }
+
+  $commit_order = lead($order['chain']['commit'], $chain_width)
+  $commit_order_arr = [ $table_order, $title, $commit_order ]
+  $commit_order_r = join( $commit_order_arr, $separator )
+  concat::fragment { "ip6tables-${title}-commit-line":
+    ensure  => 'present',
+    target  => $config,
+    order   => $commit_order_r,
+    content => "COMMIT\n",
+  }
 }

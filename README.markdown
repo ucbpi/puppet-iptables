@@ -11,6 +11,9 @@
     * [Examples - Demonstration of common features](#examples)
 5. [Usage - The classes and defined types available for configuration](#usage)
 6. [Reference](#reference)
+    * [Classes - Private API Classes](#classes)
+    * [Defines - Private API Defined Types](#defined-types)
+    * [Functions - Private API Functions](#functions)
 
 ##Overview
 
@@ -243,3 +246,168 @@ Prevent hosts from sending outbound SMTP packets to unauthorized servers:
       chain            => 'OUTPUT,
     }
 ```
+
+##Reference
+
+This section provides insight into the internal operations of the module. This
+information is only for reference, and is not consider to be a stable interface
+for using the module. As a result, this information may change periodically,
+even between minor version changes.
+
+###Classes
+
+####Class: `iptables::ipv4`
+
+This class handles the setup of the iptables concat target, and the initial
+fragments required for iptables to operate, such as the commit line.
+
+This class also contains variables used by classes and defines under the
+iptables::ipv4 namespace, such as information about builtin chains for iptables.
+
+####Class: `iptables::ipv6`
+
+This class handles the setup of the ip6tables concat target, and the initial
+fragments required for ip6tables to operate, such as the commit line.
+
+This class also contains variables used by classes and defines under the
+iptables::ipv6 namespace, such as information about builtin chains for ip6tables.
+
+###Defined Types
+
+####Define: `iptables::ipv4::chain`
+
+Handles setting up our iptables chain entry in our iptables file. Called by
+`iptables::ipv4::rule` exclusively.
+
+**Parameters for `iptables::ipv4::chain`:**
+
+#####`comment`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a string comment to place above the chain entry in the iptables file.
+
+#####`policy`:
+
+the default policy for the chain. if not specified, the default value is 'ACCEPT'
+
+####Define: `iptables::ipv4::rule`
+
+Defined type that handles building our ipv4 rule lines, and ensuring the proper
+chains and tables are created as necessary.
+
+**Parameters for `iptables::ipv4::rule`:**
+
+#####`options`
+
+a hash of options that is passed through from iptables::rule that mostly mirrors
+the parameters available to the iptables::rule define. parameters that do not
+make sense for ipv4 rules are excluded.
+
+#####`defaults`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a hash of options that is merged with the passed in parameters. we dont use this
+since we ended up making this part of the private api, so we can get rid of it.
+
+####Define: `iptables::ipv4::table`
+
+Handles setting up our iptables table entry in our iptables file. Called by
+`iptables::ipv4::chain` and `iptables::ipv4` exclusively.
+
+####Define: `iptables::ipv6::chain`
+
+Handles setting up our ip6tables chain entry in our ip6tables file. Called by
+`iptables::ipv6::rule` exclusively.
+
+**Parameters for `iptables::ipv6::chain`:**
+
+#####`comment`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a string comment to place above the chain entry in the ip6tables file.
+
+#####`policy`:
+
+the default policy for the chain. if not specified, the default value is 'ACCEPT'
+
+####Define: `iptables::ipv6::rule`
+
+Defined type that handles building our ipv6 rule lines, and ensuring the proper
+chains and tables are created as necessary.
+
+**Parameters for `iptables::ipv6::rule`:**
+
+#####`options`
+
+a hash of options that is passed through from iptables::rule that mostly mirrors
+the parameters available to the iptables::rule define. parameters that do not
+make sense for ipv6 rules are excluded.
+
+#####`defaults`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a hash of options that is merged with the passed in parameters. we dont use this
+since we ended up making this part of the private api, so we can get rid of it.
+
+####Define: `iptables::ipv6::table`
+
+Handles setting up our ip6tables table entry in our ip6tables file. Called by
+`iptables::ipv6::chain` and `iptables::ipv6` exclusively.
+
+###Functions
+
+####Function: `format_action`
+
+**Deprecation: this function will be renamed iptables_format_action in a future version**
+
+Formats our iptables action (ie. ACCEPT/REJECT/REDIRECT/etc). This function
+accepts a single parameter, the target of the rule. In general, passing in a
+target such as SOMECHAIN should return '-j SOMECHAIN'
+
+**Parameters for function `format_action`:**
+
+#####`target`
+
+The target chain or action that signifies what should happen to the packet,
+should the rule match.
+
+####Function: `format_chain`
+
+**Deprecation: this function will be renamed iptables_format_chain in a future version**
+
+Formats the portion of our iptables/ip6tables rule that associates a rule with a
+chain using the append method. For example, passing the value 'INPUT' would
+return '-A INPUT'.
+
+**Parameters for function `format_chain`:**
+
+#####`chain`
+
+The name of a chain.
+
+####Function: `format_interface`
+
+####Function: `format_log`
+
+####Function: `format_port`
+
+####Function: `format_protocol`
+
+####Function: `format_reject`
+
+####Function: `format_state`
+
+####Function: `iptables_format_to_port`
+
+####Function: `iptables_generate_rule`
+
+####Function: `iptables_parse_options`
+
+####Function: `iptables_prep_option`
+
+####Function: `split_ip_by_version`
+
