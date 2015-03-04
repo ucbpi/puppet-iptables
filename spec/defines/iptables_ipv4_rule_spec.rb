@@ -71,4 +71,25 @@ describe 'iptables::ipv4::rule' do
         'iptables-table-filter-chain-INPUT-rule-reject-all').with( output )
     end
   end
+
+  context '=> nat table rule' do
+    let(:title) { 'redirect to 80 to 8080' }
+
+    let(:params) {
+      {
+        'options' => {
+          'table'  => 'nat',
+          'destination' => '0.0.0.0/0',
+          'chain' => 'PREROUTING',
+          'protocol' => 'tcp',
+          'destination_port' => '80',
+          'action' => 'LOG',
+          'redirect_to' => '1080',
+        }
+      } }
+    it do
+      should contain_iptables__ipv4__chain('nat:PREROUTING')
+      should contain_iptables__ipv4__table('nat')
+    end
+  end
 end

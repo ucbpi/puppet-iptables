@@ -9,7 +9,7 @@ describe 'iptables::ipv6::rule' do
                                     'protocol' => 'tcp' } } }
 
     it do
-      should contain_iptables__ipv6__chain('INPUT')
+      should contain_iptables__ipv6__chain('filter:INPUT')
       should contain_concat__fragment(
         'ip6tables-table-filter-chain-INPUT-rule-allow ssh from world' ) \
         .with( { 'order' => '1_filter_2_INPUT_500',
@@ -25,7 +25,7 @@ describe 'iptables::ipv6::rule' do
                                     'chain' => 'ADMIN',
                                     'order' => '100' } } }
     it do
-      should contain_iptables__ipv6__chain('ADMIN')
+      should contain_iptables__ipv6__chain('filter:ADMIN')
       should contain_concat__fragment(
         'ip6tables-table-filter-chain-ADMIN-rule-allow ssh on admin chain' ) \
         .with( { 'order' => '1_filter_9_ADMIN_100',
@@ -42,7 +42,7 @@ describe 'iptables::ipv6::rule' do
       'order' => '25' } } }
 
     it do
-      should contain_iptables__ipv6__chain('INPUT')
+      should contain_iptables__ipv6__chain('filter:INPUT')
       should contain_concat__fragment(
         'ip6tables-table-filter-chain-INPUT-rule-admin-jump' ) \
         .with( { 'order' => '1_filter_2_INPUT_025',
@@ -72,6 +72,28 @@ describe 'iptables::ipv6::rule' do
                      "-A INPUT -j REJECT --reject-with icmp6-adm-prohibited\n" }
       should contain_concat__fragment(
         'ip6tables-table-filter-chain-INPUT-rule-reject-all').with( output )
+    end
+  end
+
+  context '=> nat table rule' do
+    let(:title) { 'redirect to 80 to 8080' }
+
+    let(:params) {
+      {
+        'options' => {
+          'table'  => 'nat',
+          'destination' => '0.0.0.0/0',
+          'chain' => 'PREROUTING',
+          'protocol' => 'tcp',
+          'destination_port' => '80',
+          'redirect_to' => '1080',
+        }
+      } }
+    it do
+      expect { 
+      should contain_iptables__ipv6__chain('nat:PREROUTING')
+      should contain_iptables__ipv6__table('nat')
+      }.to raise_error(Puppet::Error)
     end
   end
 end

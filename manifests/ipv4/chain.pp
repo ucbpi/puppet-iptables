@@ -14,24 +14,27 @@
 # Set our default policy if this is a built-in chain. If this is not a built-in
 # chain, this parameter is ignored.  Default is 'ACCEPT'
 #
-# [*table*]
-#
-# Which table should this be associated with? Default is 'filter'
-#
 define iptables::ipv4::chain (
   $comment = undef,
   $policy = 'ACCEPT',
-  $table = 'filter'
 ) {
   include iptables::ipv4
+
+  $ct = split($title,':')
+  $chain = $ct[1]
+  $table = $ct[0]
+
+  if size($ct) != 2 {
+    fail("resource title expected to be 'TABLE:CHAIN', instead it looks like I only got ${title}")
+  }
 
   $order = $iptables::order
   $config = $iptables::ipv4::config
   $separator = $iptables::join_separator
 
-  # ensure oir name is reasonable, according to iptables at least
-  if $name !~ /^[^-].*$/ {
-    fail( "invalid chain - name cannot begin with a '-' character - '${name}'" )
+  # ensure our name is reasonable, according to iptables at least
+  if $chain !~ /^[^-].*$/ {
+    fail( "invalid chain - name cannot begin with a '-' character - '${chain}'" )
   }
 
   # build our table if it has not been defined yet
@@ -45,7 +48,7 @@ define iptables::ipv4::chain (
   $builtin = $iptables::ipv4::builtin_chains[$table]
 
   # if the chain is a builtin, apply the policy
-  if member( $builtin, $name ) {
+  if member( $builtin, $chain ) {
     $policy_r = upcase( $policy )
     validate_re( $policy_r, '^(ACCEPT|DROP)$',
       "invalid chain policy - ${policy_r}" )
@@ -53,15 +56,15 @@ define iptables::ipv4::chain (
     $policy_r = '-'
   }
 
-  $chain_order_arr = [ $table_order, $order['chain']['name'], $name ]
+  $chain_order_arr = [ $table_order, $order['chain']['name'], $chain ]
   $chain_order = join( $chain_order_arr, $separator )
 
   $file_content = $comment ? {
-    undef   => ":${name} ${policy_r} [0:0]\n",
-    default => "# ${comment}\n:${name} ${policy_r} [0:0]\n",
+    undef   => ":${chain} ${policy_r} [0:0]\n",
+    default => "# ${comment}\n:${chain} ${policy_r} [0:0]\n",
   }
 
-  concat::fragment { "iptables-table-${table}-chain-${name}":
+  concat::fragment { "iptables-table-${table}-chain-${chain}":
     order   => $chain_order,
     target  => $config,
     content => $file_content,

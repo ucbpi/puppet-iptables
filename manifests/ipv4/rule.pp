@@ -16,10 +16,10 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
   $rule_width = $iptables::rule_order_width
 
   $opt = iptables_parse_options( $options, $defaults , '4' )
-  if $opt['table'] =~ /^[a-z]$/ {
-    $table = $opt['table']
-  } else {
-    $table = 'filter'
+
+  $table = $opt['table']
+  if member(keys($iptables::ipv4::builtin_chains),$table) == false {
+    fail("invalid table name: ${table} for iptables")
   }
 
   if $opt['chain'] =~ /^[^- ].+$/ {
@@ -28,10 +28,11 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
     $chain = 'INPUT'
   }
 
-  # setup our chain if not done already.  let it handle
-  # setting up our table
-  $chain_res = Iptables::Ipv4::Chain[$chain]
-  if ! defined ( $chain_res ) { iptables::ipv4::chain{ $chain: } }
+  # ensure our table/chain combo is already setup
+  $chain_res = Iptables::Ipv4::Chain["${table}:${chain}"]
+  if ! defined ( $chain_res ) {
+    iptables::ipv4::chain{ "${table}:${chain}": }
+  }
 
   $builtin = $iptables::ipv4::builtin_chains[$table]
   $rule = join( iptables_generate_rule( $opt, '4' ), "\n" )

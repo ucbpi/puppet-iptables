@@ -9,6 +9,7 @@ class iptables::ipv4 {
   $order = $iptables::order
   $table_order_width = $iptables::table_order_width
 
+  # taken from the iptables 1.4.7 man page on rhel6
   $builtin_chains = {
     nat    => [ 'PREROUTING', 'OUTPUT', 'POSTROUTING' ],
     raw    => [ 'PREROUTING', 'OUTPUT' ],

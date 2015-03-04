@@ -11,6 +11,7 @@ class iptables::ipv6 {
   $order = $iptables::order
   $table_order_width = $iptables::table_order_width
 
+  # taken from the man page of ip6tables 1.4.7 on rhel6
   $builtin_chains = {
     filter => [ 'INPUT', 'FORWARD', 'OUTPUT' ],
     mangle => [ 'PREROUTING', 'OUTPUT', 'INPUT', 'FORWARD', 'POSTROUTING' ],

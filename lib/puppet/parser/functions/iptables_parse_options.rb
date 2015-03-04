@@ -18,11 +18,19 @@ EOS
     mod_default = {
       'action' => 'ACCEPT',
       'chain' => 'INPUT',
+      'table' => 'filter',
     }
 
     # store any flags we want to pass back out to the calling function.  this
     # will end up being part of the options hash we return, with key 'mod_flags'
     mod_flags = { }
+
+    #
+    ## 'table' option - tbl_ flags
+    #
+    table_input = [ 'table', options, defaults, mod_default['table'] ]
+    options['table'] = function_iptables_prep_option(table_input)
+    mod_flags["tbl_#{options['table']}"] = true
 
     #
     ## 'action' option - act_ flags

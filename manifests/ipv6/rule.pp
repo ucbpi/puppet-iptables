@@ -17,10 +17,9 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
 
   $opt = iptables_parse_options( $options, $defaults, '6' )
 
-  if $opt['table'] =~ /^[a-z]$/ {
-    $table = $opt['table']
-  } else {
-    $table = 'filter'
+  $table = $opt['table']
+  if member(keys($iptables::ipv6::builtin_chains),$table) == false {
+    fail("invalid table name: ${table} for ip6tables")
   }
 
   if $opt['chain'] =~ /^[^-].*$/ {
@@ -29,11 +28,10 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
     $chain = 'INPUT'
   }
 
-  # setup our chain if not done already.  let it handle
-  # setting up our table
-  $chain_res = Iptables::Ipv6::Chain[$chain]
+  # ensure our table/chain combo is already setup
+  $chain_res = Iptables::Ipv6::Chain["${table}:${chain}"]
   if ! defined ( $chain_res ) {
-    iptables::ipv6::chain{ $chain: }
+    iptables::ipv6::chain{ "${table}:${chain}": }
   }
 
   $builtin = $iptables::ipv6::builtin_chains[$table]
@@ -42,6 +40,9 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
   $table_order_arr = [ $order['table'][$table], $table ]
   $table_order = join( $table_order_arr, $separator )
 
+  # TODO: pretty sure the following line is a bug preventing IPv6 chains other
+  #       than the ADMIN and INPUT chain. Nobody has complained though, so
+  #       maybe I'm forgetting while we need this?
   if ! $chain =~  /^(ADMIN|INPUT)$/ { fail( "chain - ${chain}") }
   $chain_order_arr = member( $builtin, $chain ) ? {
     true    => [ $order['chain'][$chain], $chain ],
