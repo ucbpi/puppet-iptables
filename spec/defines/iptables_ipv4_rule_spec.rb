@@ -26,7 +26,7 @@ describe 'iptables::ipv4::rule' do
     it do
       should contain_concat__fragment(
         'iptables-table-filter-chain-ADMIN-rule-allow ssh on admin chain' ) \
-        .with( { 'order' => '1_filter_9_ADMIN_100',
+        .with( { 'order' => '1_filter_8_ADMIN_100',
                 'target' => '/etc/sysconfig/iptables',
                 'content' => "-A ADMIN -p tcp --dport 22 -j ACCEPT\n" } )
     end

@@ -26,14 +26,6 @@ class iptables::ipv4 {
     mode  => '0440',
   }
 
-  $commit_order = lead($order['table']['commit'], $table_order_width)
-  concat::fragment { 'iptables-commit-line':
-    ensure  => 'present',
-    target  => $config,
-    order   => $commit_order,
-    content => "COMMIT\n",
-  }
-
   $header_order = lead($order['table']['comment'], $table_order_width)
   concat::fragment { 'iptables-header-comment':
     target  => $config,

@@ -48,7 +48,6 @@ class iptables (
     nat     => 2,
     mangle  => 3,
     raw     => 4,
-    commit  => 9,
   }
 
   $chain_order_width = 1
@@ -60,7 +59,8 @@ class iptables (
     'FORWARD'     => 4,
     'PREROUTING'  => 5,
     'POSTROUTING' => 6,
-    other         => 9,
+    other         => 8,
+    commit        => 9,
   }
 
   $rule_order_width = 3

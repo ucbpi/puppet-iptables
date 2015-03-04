@@ -28,7 +28,7 @@ describe 'iptables::ipv6::rule' do
       should contain_iptables__ipv6__chain('filter:ADMIN')
       should contain_concat__fragment(
         'ip6tables-table-filter-chain-ADMIN-rule-allow ssh on admin chain' ) \
-        .with( { 'order' => '1_filter_9_ADMIN_100',
+        .with( { 'order' => '1_filter_8_ADMIN_100',
                 'target' => '/etc/sysconfig/ip6tables',
                 'content' => "-A ADMIN -p tcp --dport 22 -j ACCEPT\n" } )
     end
