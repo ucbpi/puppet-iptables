@@ -354,3 +354,57 @@ since we ended up making this part of the private api, so we can get rid of it.
 
 Handles setting up our ip6tables table entry in our ip6tables file. Called by
 `iptables::ipv6::chain` and `iptables::ipv6` exclusively.
+
+###Functions
+
+####Function: `format_action`
+
+**Deprecation: this function will be renamed iptables_format_action in a future version**
+
+Formats our iptables action (ie. ACCEPT/REJECT/REDIRECT/etc). This function
+accepts a single parameter, the target of the rule. In general, passing in a
+target such as SOMECHAIN should return '-j SOMECHAIN'
+
+**Parameters for function `format_action`:**
+
+#####`target`
+
+The target chain or action that signifies what should happen to the packet,
+should the rule match.
+
+####Function: `format_chain`
+
+**Deprecation: this function will be renamed iptables_format_chain in a future version**
+
+Formats the portion of our iptables/ip6tables rule that associates a rule with a
+chain using the append method. For example, passing the value 'INPUT' would
+return '-A INPUT'.
+
+**Parameters for function `format_chain`:**
+
+#####`chain`
+
+The name of a chain.
+
+####Function: `format_interface`
+
+####Function: `format_log`
+
+####Function: `format_port`
+
+####Function: `format_protocol`
+
+####Function: `format_reject`
+
+####Function: `format_state`
+
+####Function: `iptables_format_to_port`
+
+####Function: `iptables_generate_rule`
+
+####Function: `iptables_parse_options`
+
+####Function: `iptables_prep_option`
+
+####Function: `split_ip_by_version`
+
