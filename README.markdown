@@ -11,6 +11,9 @@
     * [Examples - Demonstration of common features](#examples)
 5. [Usage - The classes and defined types available for configuration](#usage)
 6. [Reference](#reference)
+    * [Classes - Private API Classes](#classes)
+    * [Defines - Private API Defined Types](#defined-types)
+    * [Functions - Private API Functions](#functions)
 
 ##Overview
 
