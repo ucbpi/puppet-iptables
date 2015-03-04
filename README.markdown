@@ -243,3 +243,39 @@ Prevent hosts from sending outbound SMTP packets to unauthorized servers:
       chain            => 'OUTPUT,
     }
 ```
+
+##Reference
+
+This section provides insight into the internal operations of the module. This
+information is only for reference, and is not consider to be a stable interface
+for using the module. As a result, this information may change periodically,
+even between minor version changes.
+
+###Classes
+
+####Class: `iptables::ipv4`
+
+This class handles the setup of the iptables concat target, and the initial
+fragments required for iptables to operate, such as the commit line.
+
+###Defined Types
+
+####Define: `iptables::ipv4::rule`
+
+Defined type that handles building our ipv4 rule lines, and ensuring the proper
+chains and tables are created as necessary.
+
+**Parameters for `iptables::ipv4::rule`:**
+
+#####`options`
+
+a hash of options that is passed through from iptables::rule that mostly mirrors
+the parameters available to the iptables::rule define. parameters that do not
+make sense for ipv4 rules are excluded.
+
+#####`defaults`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a hash of options that is merged with the passed in parameters. we dont use this
+since we ended up making this part of the private api, so we can get rid of it.
