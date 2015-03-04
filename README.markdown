@@ -261,6 +261,14 @@ fragments required for iptables to operate, such as the commit line.
 This class also contains variables used by classes and defines under the
 iptables::ipv4 namespace, such as information about builtin chains for iptables.
 
+####Class: `iptables::ipv6`
+
+This class handles the setup of the ip6tables concat target, and the initial
+fragments required for ip6tables to operate, such as the commit line.
+
+This class also contains variables used by classes and defines under the
+iptables::ipv6 namespace, such as information about builtin chains for ip6tables.
+
 ###Defined Types
 
 ####Define: `iptables::ipv4::chain`
@@ -304,3 +312,45 @@ since we ended up making this part of the private api, so we can get rid of it.
 
 Handles setting up our iptables table entry in our iptables file. Called by
 `iptables::ipv4::chain` and `iptables::ipv4` exclusively.
+
+####Define: `iptables::ipv6::chain`
+
+Handles setting up our ip6tables chain entry in our ip6tables file. Called by
+`iptables::ipv6::rule` exclusively.
+
+**Parameters for `iptables::ipv6::chain`:**
+
+#####`comment`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a string comment to place above the chain entry in the ip6tables file.
+
+#####`policy`:
+
+the default policy for the chain. if not specified, the default value is 'ACCEPT'
+
+####Define: `iptables::ipv6::rule`
+
+Defined type that handles building our ipv6 rule lines, and ensuring the proper
+chains and tables are created as necessary.
+
+**Parameters for `iptables::ipv6::rule`:**
+
+#####`options`
+
+a hash of options that is passed through from iptables::rule that mostly mirrors
+the parameters available to the iptables::rule define. parameters that do not
+make sense for ipv6 rules are excluded.
+
+#####`defaults`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a hash of options that is merged with the passed in parameters. we dont use this
+since we ended up making this part of the private api, so we can get rid of it.
+
+####Define: `iptables::ipv6::table`
+
+Handles setting up our ip6tables table entry in our ip6tables file. Called by
+`iptables::ipv6::chain` and `iptables::ipv6` exclusively.
