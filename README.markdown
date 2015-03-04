@@ -258,7 +258,27 @@ even between minor version changes.
 This class handles the setup of the iptables concat target, and the initial
 fragments required for iptables to operate, such as the commit line.
 
+This class also contains variables used by classes and defines under the
+iptables::ipv4 namespace, such as information about builtin chains for iptables.
+
 ###Defined Types
+
+####Define: `iptables::ipv4::chain`
+
+Handles setting up our iptables chain entry in our iptables file. Called by
+`iptables::ipv4::rule` exclusively.
+
+**Parameters for `iptables::ipv4::chain`:**
+
+#####`comment`
+
+**Deprecated**: This parameter will be removed in a future version
+
+a string comment to place above the chain entry in the iptables file.
+
+#####`policy`:
+
+the default policy for the chain. if not specified, the default value is 'ACCEPT'
 
 ####Define: `iptables::ipv4::rule`
 
@@ -279,3 +299,8 @@ make sense for ipv4 rules are excluded.
 
 a hash of options that is merged with the passed in parameters. we dont use this
 since we ended up making this part of the private api, so we can get rid of it.
+
+####Define: `iptables::ipv4::table`
+
+Handles setting up our iptables table entry in our iptables file. Called by
+`iptables::ipv4::chain` and `iptables::ipv4` exclusively.
