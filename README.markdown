@@ -145,10 +145,6 @@ The value of this string will be inserted into the rule without modification jus
 
 The value of this string will be inserted into the rule without modification just after the '-j TARGET' component of a rule.
 
-#####`redirect_to`
-
-When using the built-in 'REDIRECT' target on the 'nat' chain, this sets the '--redirect-to' directive.
-
 #####`reject_with`
 
 When using the built-in 'REJECT' target, this sets the '--reject-with' directive.
@@ -180,6 +176,10 @@ Default is true
 #####`table`
 
 The table this rule is placed in. This defaults to the 'filter' table.
+
+#####`to_port`
+
+When using the built-in 'REDIRECT' target on the 'nat' chain, this sets the '--to-port' directive.
 
 #####`version`
 

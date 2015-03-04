@@ -4,7 +4,7 @@ describe 'iptables::ipv4::chain' do
   let(:facts) { { :concat_basedir => '/var/lib/puppet/concat' } }
 
   context '=>  builtin chain' do
-    let(:title) { 'INPUT' }
+    let(:title) { 'filter:INPUT' }
 
     context '=> no options' do
       it do
@@ -12,6 +12,7 @@ describe 'iptables::ipv4::chain' do
           .with( { 'order' => '1_filter_1_INPUT',
                    'target' => '/etc/sysconfig/iptables',
                    'content' => ":INPUT ACCEPT [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
 
@@ -22,6 +23,7 @@ describe 'iptables::ipv4::chain' do
           .with( { 'order' => '1_filter_1_INPUT',
                    'target' => '/etc/sysconfig/iptables',
                    'content' => "# comment here\n:INPUT ACCEPT [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
 
@@ -32,6 +34,7 @@ describe 'iptables::ipv4::chain' do
           .with( { 'order' => '1_filter_1_INPUT',
                     'target' => '/etc/sysconfig/iptables',
                     'content' => ":INPUT DROP [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
 
@@ -43,13 +46,14 @@ describe 'iptables::ipv4::chain' do
              .with( { 'order' => '1_filter_1_INPUT',
                       'target' => '/etc/sysconfig/iptables',
                       'content' => ":INPUT DROP [0:0]\n" } )
+          should contain_iptables__ipv4__table('filter')
         }.to raise_error(Puppet::Error, /invalid chain policy/)
       end
     end
   end
 
   context "=> non-builtin chain" do
-    let(:title) { 'JUNK' }
+    let(:title) { 'filter:JUNK' }
 
     context '=> no options' do
       it do
@@ -57,6 +61,7 @@ describe 'iptables::ipv4::chain' do
           .with( { 'order' => '1_filter_1_JUNK',
                    'target' => '/etc/sysconfig/iptables',
                    'content' => ":JUNK - [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
 
@@ -67,6 +72,7 @@ describe 'iptables::ipv4::chain' do
           .with( { 'order' => '1_filter_1_JUNK',
                    'target' => '/etc/sysconfig/iptables',
                    'content' => "# comment here\n:JUNK - [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
 
@@ -77,6 +83,7 @@ describe 'iptables::ipv4::chain' do
           .with( { 'order' => '1_filter_1_JUNK',
                     'target' => '/etc/sysconfig/iptables',
                     'content' => ":JUNK - [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
 
@@ -87,12 +94,13 @@ describe 'iptables::ipv4::chain' do
            .with( { 'order' => '1_filter_1_JUNK',
                     'target' => '/etc/sysconfig/iptables',
                     'content' => ":JUNK - [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       end
     end
   end
 
   context "=> invalid name" do
-    let(:title) { '-INPUT' }
+    let(:title) { 'filter:-INPUT' }
 
     it do
       expect {
@@ -100,6 +108,7 @@ describe 'iptables::ipv4::chain' do
             .with( { 'order' => '1_filter_1_-INPUT',
                      'target' => '/etc/sysconfig/iptables',
                      'content' => ":-INPUT - [0:0]\n" } )
+        should contain_iptables__ipv4__table('filter')
       }.to raise_error( Puppet::Error, /name cannot/ )
     end
   end

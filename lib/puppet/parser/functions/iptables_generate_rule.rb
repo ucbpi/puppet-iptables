@@ -13,7 +13,7 @@ EOS
     Puppet::Parser::Functions.function('format_protocol')
     Puppet::Parser::Functions.function('format_reject')
     Puppet::Parser::Functions.function('format_state')
-    Puppet::Parser::Functions.function('iptables_format_redirect_to')
+    Puppet::Parser::Functions.function('iptables_format_to_port')
 
     opt = args[0]
 
@@ -65,7 +65,7 @@ EOS
     log = function_format_log( [ log_opts ] ) if flg['act_LOG']
 
     # redirect's can only happen on the nat table
-    red = function_iptables_format_redirect_to( [ opt['redirect_to'] ] ) \
+    red = function_iptables_format_to_port( [ opt['to_port'] ] ) \
       if flg['act_REDIRECT'] and opt['table'] == 'nat'
 
     # throw some errors when appropriate

@@ -1,5 +1,5 @@
 module Puppet::Parser::Functions
-  newfunction(:iptables_format_redirect_to, :type => :rvalue,:doc => <<-EOS
+  newfunction(:iptables_format_to_port, :type => :rvalue,:doc => <<-EOS
   EOS
 ) do |args|
     red = ''
@@ -20,9 +20,9 @@ module Puppet::Parser::Functions
     end
 
     if nums.size == 1
-      return "--redirect-to #{nums[0]}"
+      return "--to-port #{nums[0]}"
     elsif nums.size == 2
-      return "--redirect-to #{nums[0]}:#{nums[1]}"
+      return "--to-port #{nums[0]}:#{nums[1]}"
     else
       raise Puppet::ParseError, "invalid range definition '#{red}'"
     end

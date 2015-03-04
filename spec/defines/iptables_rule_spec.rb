@@ -120,4 +120,22 @@ describe 'iptables::rule' do
       should contain_iptables__ipv6__rule('all valid ips')
     end
   end
+
+  context '=> nat table rule' do
+    let(:title) { 'redirect to 80 to 8080' }
+    let(:params) {
+      { 'table'  => 'nat',
+        'destination' => '0.0.0.0/0',
+        'chain' => 'PREROUTING',
+        'protocol' => 'tcp',
+        'destination_port' => '80',
+        'action' => 'REDIRECT',
+        'to_port' => '1080',
+    } }
+    it do
+      should contain_iptables__ipv4__rule('redirect to 80 to 8080')
+      should contain_iptables__ipv4__chain('nat:PREROUTING')
+      should contain_iptables__ipv4__table('nat')
+    end
+  end
 end

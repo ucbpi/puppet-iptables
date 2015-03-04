@@ -4,7 +4,7 @@ describe 'iptables::ipv6::chain' do
   let(:facts) { { :concat_basedir => '/var/lib/puppet/concat' } }
 
   context '=>  builtin chain' do
-    let(:title) { 'INPUT' }
+    let(:title) { 'filter:INPUT' }
 
     context '=> no options' do
       it do
@@ -49,7 +49,7 @@ describe 'iptables::ipv6::chain' do
   end
 
   context "=> non-builtin chain" do
-    let(:title) { 'JUNK' }
+    let(:title) { 'filter:JUNK' }
 
     context '=> no options' do
       it do
@@ -92,7 +92,7 @@ describe 'iptables::ipv6::chain' do
   end
 
   context "=> invalid name" do
-    let(:title) { '-INPUT' }
+    let(:title) { 'filter:-INPUT' }
 
     it do
       expect {
