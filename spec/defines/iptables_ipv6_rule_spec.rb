@@ -86,7 +86,7 @@ describe 'iptables::ipv6::rule' do
           'chain' => 'PREROUTING',
           'protocol' => 'tcp',
           'destination_port' => '80',
-          'redirect_to' => '1080',
+          'to_port' => '1080',
         }
       } }
     it do

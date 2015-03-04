@@ -84,7 +84,7 @@ describe 'iptables::ipv4::rule' do
           'protocol' => 'tcp',
           'destination_port' => '80',
           'action' => 'LOG',
-          'redirect_to' => '1080',
+          'to_port' => '1080',
         }
       } }
     it do

@@ -382,14 +382,14 @@ describe 'iptables_generate_rule' do
         options = {
         'chain' => 'PREROUTING',
         'action' => 'REDIRECT',
-        'redirect_to' => '8080:8090',
+        'to_port' => '8080:8090',
         'protocol' => 'tcp',
         'destination_port' => '80:90',
         'table' => 'nat',
         'mod_flags' => { 'act_REDIRECT' => true },
         }
         defaults = { }
-        output = [ '-A PREROUTING -p tcp --dport 80:90 -j REDIRECT --redirect-to 8080:8090' ]
+        output = [ '-A PREROUTING -p tcp --dport 80:90 -j REDIRECT --to-port 8080:8090' ]
         should run.with_params( options, defaults, '4' ).and_return(output)
       }
     end
@@ -398,7 +398,7 @@ describe 'iptables_generate_rule' do
       it {
         options = {
         'action' => 'REDIRECT',
-        'redirect_to' => '8080:8090',
+        'to_port' => '8080:8090',
         'protocol' => 'tcp',
         'destination_port' => '80:90',
         'mod_flags' => { 'act_REDIRECT' => true },
@@ -413,14 +413,14 @@ describe 'iptables_generate_rule' do
       it {
         options = {
           'protocol' => 'tcp',
-          'raw_after' => '--redirect-to 80',
+          'raw_after' => '--to-port 80',
           'action' => 'REDIRECT',
           'chain' => 'PREROUTING',
           'table' => 'nat',
           'destination_port' => '22',
         }
         defaults = { }
-        output = [ '-A PREROUTING -p tcp --dport 22 -j REDIRECT --redirect-to 80' ]
+        output = [ '-A PREROUTING -p tcp --dport 22 -j REDIRECT --to-port 80' ]
         should run.with_params( options, defaults, '4' ).and_return(output)
       }
     end

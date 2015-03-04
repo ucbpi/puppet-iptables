@@ -63,13 +63,13 @@ describe 'iptables_parse_options' do
       }
 
       it {
-        input = { 'chain' => 'PREROUTING', 'action' => 'REDIRECT', 'table' => 'nat', 'redirect_to' => '2222' }
+        input = { 'chain' => 'PREROUTING', 'action' => 'REDIRECT', 'table' => 'nat', 'to_port' => '2222' }
         output = {
           'action' => 'REDIRECT',
           'chain' => 'PREROUTING',
           'table' => 'nat',
           'destination_port' => '22',
-          'redirect_to' => '2222',
+          'to_port' => '2222',
           'source' => '192.168.23.0/24',
           'log_prefix' => 'BlkPkt: ',
           'log_level' => 'debug',

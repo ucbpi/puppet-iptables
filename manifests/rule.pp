@@ -73,13 +73,13 @@ define iptables::rule (
   $protocol = undef,
   $raw = undef,
   $raw_after = undef,
-  $redirect_to = undef,
   $reject_with = undef,
   $source = undef,
   $source_port = undef,
   $state = undef,
   $strict_protocol_checking = undef,
   $table = undef,
+  $to_port = undef,
   $version = undef
 ) {
   include iptables
@@ -112,7 +112,7 @@ define iptables::rule (
     'protocol'                 => $protocol,
     'raw'                      => $raw,
     'raw_after'                => $raw_after,
-    'redirect_to'              => $redirect_to,
+    'to_port'                  => $to_port,
     'reject_with'              => $reject_with,
     'source'                   => $ips['4'],
     'source_port'              => $source_port,

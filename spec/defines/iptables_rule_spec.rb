@@ -130,7 +130,7 @@ describe 'iptables::rule' do
         'protocol' => 'tcp',
         'destination_port' => '80',
         'action' => 'REDIRECT',
-        'redirect_to' => '1080',
+        'to_port' => '1080',
     } }
     it do
       should contain_iptables__ipv4__rule('redirect to 80 to 8080')
