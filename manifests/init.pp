@@ -15,9 +15,9 @@
 # Defaults to /etc/sysconfig/ip6tables
 #
 class iptables (
-  $iptables_file = undef,
-  $ip6tables_file = undef,
-  $version = undef
+  $iptables_file = 'UNSET',
+  $ip6tables_file = 'UNSET',
+  $version = 'UNSET',
 ) {
   include concat::setup
 
@@ -25,12 +25,12 @@ class iptables (
   # Parameter Validation
   ##############################################################################
   $config = $iptables_file ? {
-    undef   => '/etc/sysconfig/iptables',
+    'UNSET'   => '/etc/sysconfig/iptables',
     default => $iptables_file,
   }
 
   $config6 = $ip6tables_file ? {
-    undef   => '/etc/sysconfig/ip6tables',
+    'UNSET'   => '/etc/sysconfig/ip6tables',
     default => $ip6tables_file,
   }
 
