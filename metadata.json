@@ -11,7 +11,7 @@
   "dependencies": [
     {"version_requirement":">= 0.2.0","name":"ripienaar/concat"},
     {"version_requirement":">= 0.0.1","name":"arusso/oski"},
-    {"version_requirement":">= 2.6.0","name":"puppetlabs/stdlib"}
+    {"version_requirement":">= 4.2.0","name":"puppetlabs/stdlib"}
   ],
   "operatingsystem_support": [
     {
