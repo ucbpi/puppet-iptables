@@ -166,7 +166,7 @@ define iptables::rule (
     $gen4 = true
     $gen6 = true
     if $other_count > 0 {
-      warning { "${title} - invalid IPs detected and will be skipped": }
+      warning ( "${title} - invalid IPs detected and will be skipped" )
     }
   }
 
