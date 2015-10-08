@@ -8,7 +8,7 @@
 #
 # A hash table of all the options available to the rule
 #
-define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
+define iptables::ipv6::rule ( $options = 'UNSET', $defaults = 'UNSET' ) {
   include iptables::ipv6
 
   $order = $iptables::order
@@ -22,7 +22,7 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
     fail("invalid table name: ${table} for ip6tables")
   }
 
-  if $opt['chain'] =~ /^[^-].*$/ {
+  if $opt['chain'] != 'UNSET' and $opt['chain'] =~ /^[^-].*$/ {
     $chain = $opt['chain']
   } else {
     $chain = 'INPUT'

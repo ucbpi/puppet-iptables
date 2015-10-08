@@ -101,7 +101,7 @@ EOS
     # lets handle the comments first
     comment_line_width = 80
     comment = opt['comment']
-    if comment != nil
+    if comment != nil and comment != 'UNSET'
       prepend = "# "
       comment_width = comment_line_width - prepend.length
       comments = []
@@ -150,6 +150,7 @@ EOS
         rule.push(red) if flg['act_REDIRECT']
         rule.compact!
         rule.delete('')
+        rule.delete('UNSET')
         rules.push(rule.join(' '))
       end
     end

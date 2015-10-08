@@ -8,7 +8,7 @@
 #
 # A hash table of all the options available to the rule
 #
-define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
+define iptables::ipv4::rule ( $options = 'UNSET', $defaults = 'UNSET' ) {
   include iptables::ipv4
 
   $order = $iptables::order
@@ -22,7 +22,7 @@ define iptables::ipv4::rule ( $options = undef, $defaults = undef ) {
     fail("invalid table name: ${table} for iptables")
   }
 
-  if $opt['chain'] =~ /^[^- ].+$/ {
+  if $opt['chain'] != 'UNDEF' and $opt['chain'] =~ /^[^- ].+$/ {
     $chain = $opt['chain']
   } else {
     $chain = 'INPUT'

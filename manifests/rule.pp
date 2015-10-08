@@ -57,36 +57,36 @@
 # Default is true
 #
 define iptables::rule (
-  $action = undef, # accept, reject, etc
-  $chain = undef, # input, output, forward, etc
-  $comment = undef, # optional - puts a note in the firewall rule file
-  $destination = undef, # destination ip
-  $destination_port = undef, # destination port
-  $incoming_interface = undef, # incoming interface
-  $log_level = undef, # log level
-  $log_prefix = undef, #
-  $limit = undef,
-  $limit_burst = undef,
-  $outgoing_interface = undef,
-  $order = undef,
-  $priority = undef,
-  $protocol = undef,
-  $raw = undef,
-  $raw_after = undef,
-  $reject_with = undef,
-  $source = undef,
-  $source_port = undef,
-  $state = undef,
-  $strict_protocol_checking = undef,
-  $table = undef,
-  $to_port = undef,
-  $version = undef
+  $action = 'UNSET', # accept, reject, etc
+  $chain = 'UNSET', # input, output, forward, etc
+  $comment = 'UNSET', # optional - puts a note in the firewall rule file
+  $destination = 'UNSET', # destination ip
+  $destination_port = 'UNSET', # destination port
+  $incoming_interface = 'UNSET', # incoming interface
+  $log_level = 'UNSET', # log level
+  $log_prefix = 'UNSET', #
+  $limit = 'UNSET',
+  $limit_burst = 'UNSET',
+  $outgoing_interface = 'UNSET',
+  $order = 'UNSET',
+  $priority = 'UNSET',
+  $protocol = 'UNSET',
+  $raw = 'UNSET',
+  $raw_after = 'UNSET',
+  $reject_with = 'UNSET',
+  $source = 'UNSET',
+  $source_port = 'UNSET',
+  $state = 'UNSET',
+  $strict_protocol_checking = 'UNSET',
+  $table = 'UNSET',
+  $to_port = 'UNSET',
+  $version = 'UNSET'
 ) {
   include iptables
 
   # we renamed priority to order, but lets allow priority to be used unless
   # order is specified
-  if $order == undef and $priority != undef {
+  if $order == 'UNSET' and $priority != 'UNSET' {
     notice ('DEPRECATED: "priority" parameter is now "order"')
     $order_r = $priority
   } else {

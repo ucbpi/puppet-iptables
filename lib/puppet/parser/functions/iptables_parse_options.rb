@@ -6,9 +6,11 @@ EOS
 
     options = { }
     options = args[0] if args[0].is_a?(Hash)
+    options.delete_if { |k,v| v == 'UNSET' }
 
     defaults = { }
     defaults = args[1] if args[1].is_a?(Hash)
+    defaults.delete_if { |k,v| v == 'UNSET' }
 
     version = '4'
     version = args[2][-1].chr if args[2].is_a?(String) \

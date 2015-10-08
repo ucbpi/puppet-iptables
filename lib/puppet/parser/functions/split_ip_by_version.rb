@@ -37,7 +37,7 @@ only IPv6 addresses/subnets, and one with elements that didn't match either.
             v4_arr.push(a) if ip.ipv4?
             v6_arr.push(a) if ip.ipv6?
           rescue
-            other_arr.push(arg)
+            other_arr.push(arg) unless arg == 'UNSET'
           end
         end
       end # string handling
