@@ -21,22 +21,11 @@ describe 'iptables::rule' do
       end
 
       it do
-        mod_flags = {
-          'proto_tcp'  => true,
-          'chn_INPUT'  => true,
-          'act_ACCEPT' => true,
-          'tbl_filter' => true,
-        }
-
         options = {
-          'action'           => 'ACCEPT',
-          'chain'            => 'INPUT',
-          'mod_flags'        => mod_flags,
           'protocol'         => 'tcp',
           'destination_port' => '22',
           'source'           => [],
           'destination'      => [],
-          'table'            => 'filter',
         }
 
         should contain_iptables__ipv4
@@ -94,22 +83,11 @@ describe 'iptables::rule' do
     end
 
     it do
-      mod_flags = {
-        'proto_tcp' => true,
-        'chn_INPUT' => true,
-        'tbl_filter' => true,
-        'act_ACCEPT' => true,
-      }
-
       options = {
-        'action'           => 'ACCEPT',
-        'chain'            => 'INPUT',
-        'mod_flags'        => mod_flags,
         'protocol'         => 'tcp',
         'destination_port' => '22',
         'source'           => [],
         'destination'      => [],
-        'table'            => 'filter',
       }
       should contain_iptables__ipv6
       should contain_iptables__ipv6__rule('allow-ssh-global').with( { 'options' => options }  )

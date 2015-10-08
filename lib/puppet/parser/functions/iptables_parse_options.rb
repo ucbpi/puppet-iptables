@@ -5,11 +5,11 @@ EOS
     Puppet::Parser::Functions.function('iptables_prep_option')
 
     options = { }
-    options = args[0] if args[0].is_a?(Hash)
+    options = args[0].dup if args[0].is_a?(Hash)
     options.delete_if { |k,v| v == 'UNSET' }
 
     defaults = { }
-    defaults = args[1] if args[1].is_a?(Hash)
+    defaults = args[1].dup if args[1].is_a?(Hash)
     defaults.delete_if { |k,v| v == 'UNSET' }
 
     version = '4'
