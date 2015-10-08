@@ -57,36 +57,36 @@
 # Default is true
 #
 define iptables::rule (
-  $action = undef, # accept, reject, etc
-  $chain = undef, # input, output, forward, etc
-  $comment = undef, # optional - puts a note in the firewall rule file
-  $destination = undef, # destination ip
-  $destination_port = undef, # destination port
-  $incoming_interface = undef, # incoming interface
-  $log_level = undef, # log level
-  $log_prefix = undef, #
-  $limit = undef,
-  $limit_burst = undef,
-  $outgoing_interface = undef,
-  $order = undef,
-  $priority = undef,
-  $protocol = undef,
-  $raw = undef,
-  $raw_after = undef,
-  $reject_with = undef,
-  $source = undef,
-  $source_port = undef,
-  $state = undef,
-  $strict_protocol_checking = undef,
-  $table = undef,
-  $to_port = undef,
-  $version = undef
+  $action = 'UNSET', # accept, reject, etc
+  $chain = 'UNSET', # input, output, forward, etc
+  $comment = 'UNSET', # optional - puts a note in the firewall rule file
+  $destination = 'UNSET', # destination ip
+  $destination_port = 'UNSET', # destination port
+  $incoming_interface = 'UNSET', # incoming interface
+  $log_level = 'UNSET', # log level
+  $log_prefix = 'UNSET', #
+  $limit = 'UNSET',
+  $limit_burst = 'UNSET',
+  $outgoing_interface = 'UNSET',
+  $order = 'UNSET',
+  $priority = 'UNSET',
+  $protocol = 'UNSET',
+  $raw = 'UNSET',
+  $raw_after = 'UNSET',
+  $reject_with = 'UNSET',
+  $source = 'UNSET',
+  $source_port = 'UNSET',
+  $state = 'UNSET',
+  $strict_protocol_checking = 'UNSET',
+  $table = 'UNSET',
+  $to_port = 'UNSET',
+  $version = 'UNSET'
 ) {
   include iptables
 
   # we renamed priority to order, but lets allow priority to be used unless
   # order is specified
-  if $order == undef and $priority != undef {
+  if $order == 'UNSET' and $priority != 'UNSET' {
     notice ('DEPRECATED: "priority" parameter is now "order"')
     $order_r = $priority
   } else {
@@ -96,7 +96,7 @@ define iptables::rule (
   $ips = split_ip_by_version($source)
   $ipd = split_ip_by_version($destination)
 
-  $options = {
+  $options = delete_values({
     'action'                   => $action,
     'chain'                    => $chain,
     'comment'                  => $comment,
@@ -119,9 +119,9 @@ define iptables::rule (
     'strict_protocol_checking' => $strict_protocol_checking,
     'state'                    => $state,
     'table'                    => $table,
-  }
+  }, 'UNSET')
 
-  $options6 = {
+  $options6 = delete_values({
     'action'                   => $action,
     'chain'                    => $chain,
     'comment'                  => $comment,
@@ -143,7 +143,7 @@ define iptables::rule (
     'strict_protocol_checking' => $strict_protocol_checking,
     'state'                    => $state,
     'table'                    => $table,
-  }
+  },'UNSET')
 
   # only generate rules for a particular protocol if either:
   # 1. both protocols have 0 addresses specified
@@ -166,7 +166,7 @@ define iptables::rule (
     $gen4 = true
     $gen6 = true
     if $other_count > 0 {
-      warning { "${title} - invalid IPs detected and will be skipped": }
+      warning ( "${title} - invalid IPs detected and will be skipped" )
     }
   }
 

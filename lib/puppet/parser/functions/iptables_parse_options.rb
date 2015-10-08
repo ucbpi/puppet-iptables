@@ -5,10 +5,12 @@ EOS
     Puppet::Parser::Functions.function('iptables_prep_option')
 
     options = { }
-    options = args[0] if args[0].is_a?(Hash)
+    options = args[0].dup if args[0].is_a?(Hash)
+    options.delete_if { |k,v| v == 'UNSET' }
 
     defaults = { }
-    defaults = args[1] if args[1].is_a?(Hash)
+    defaults = args[1].dup if args[1].is_a?(Hash)
+    defaults.delete_if { |k,v| v == 'UNSET' }
 
     version = '4'
     version = args[2][-1].chr if args[2].is_a?(String) \
@@ -133,6 +135,18 @@ EOS
     #
     ste_input = [ 'state', options, defaults, mod_default['state'] ]
     options['state'] = function_iptables_prep_option( ste_input )
+
+    #
+    ## 'limit' option
+    #
+    lmt_input = [ 'limit', options, defaults, mod_default['limit'] ]
+    options['limit'] = function_iptables_prep_option( lmt_input )
+
+    #
+    ## 'limit_burst' option
+    #
+    lmt_burst_input = [ 'limit_burst', options, defaults, mod_default['limit_burst'] ]
+    options['limit_burst'] = function_iptables_prep_option( lmt_burst_input )
 
     # finally, we return our options after pruning empty ones
     options.delete_if { |opt,val| val=='' or val == nil or val == :undef }

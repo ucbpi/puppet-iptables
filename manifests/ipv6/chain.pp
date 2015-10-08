@@ -15,7 +15,7 @@
 # chain, this parameter is ignored.  Default is 'ACCEPT'
 #
 define iptables::ipv6::chain (
-  $comment = undef,
+  $comment = 'UNSET',
   $policy = 'ACCEPT',
 ) {
   include iptables::ipv6
@@ -58,7 +58,7 @@ define iptables::ipv6::chain (
   $chain_order = join( $chain_order_arr, $separator )
 
   $file_content = $comment ? {
-    undef   => ":${chain} ${policy_r} [0:0]\n",
+    'UNSET' => ":${chain} ${policy_r} [0:0]\n",
     default => "# ${comment}\n:${chain} ${policy_r} [0:0]\n",
   }
 

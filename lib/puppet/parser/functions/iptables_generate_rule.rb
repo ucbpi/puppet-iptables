@@ -14,6 +14,7 @@ EOS
     Puppet::Parser::Functions.function('format_reject')
     Puppet::Parser::Functions.function('format_state')
     Puppet::Parser::Functions.function('iptables_format_to_port')
+    Puppet::Parser::Functions.function('iptables_format_limit')
 
     opt = args[0]
 
@@ -51,6 +52,7 @@ EOS
                                         opt['strict_protocol_checking'] ] )
     ste = function_format_state( [ opt['state'] ] )
     rej = function_format_reject( [ opt['reject_with'], version ] ) if flg['act_REJECT']
+    limit = function_iptables_format_limit( [ opt['limit'], opt['limit_burst'] ])
 
     # logging options are all formatted in one function, so we'll pass in a
     # hash of values.  we'll also only format if the act_LOG flag is set,
@@ -101,7 +103,7 @@ EOS
     # lets handle the comments first
     comment_line_width = 80
     comment = opt['comment']
-    if comment != nil
+    if comment != nil and comment != 'UNSET'
       prepend = "# "
       comment_width = comment_line_width - prepend.length
       comments = []
@@ -141,6 +143,7 @@ EOS
         rule.push(spt)
         rule.push(dpt)
         rule.push(ste)
+        rule.push(limit)
         rule.push(raw)
         rule.push(act)
         rule.push(raw_after)
@@ -150,6 +153,7 @@ EOS
         rule.push(red) if flg['act_REDIRECT']
         rule.compact!
         rule.delete('')
+        rule.delete('UNSET')
         rules.push(rule.join(' '))
       end
     end

@@ -8,7 +8,7 @@
 #
 # A hash table of all the options available to the rule
 #
-define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
+define iptables::ipv6::rule ( $options = 'UNSET', $defaults = 'UNSET' ) {
   include iptables::ipv6
 
   $order = $iptables::order
@@ -22,7 +22,7 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
     fail("invalid table name: ${table} for ip6tables")
   }
 
-  if $opt['chain'] =~ /^[^-].*$/ {
+  if $opt['chain'] != 'UNSET' and $opt['chain'] =~ /^[^-].*$/ {
     $chain = $opt['chain']
   } else {
     $chain = 'INPUT'
@@ -43,7 +43,7 @@ define iptables::ipv6::rule ( $options = undef, $defaults = undef ) {
   # TODO: pretty sure the following line is a bug preventing IPv6 chains other
   #       than the ADMIN and INPUT chain. Nobody has complained though, so
   #       maybe I'm forgetting while we need this?
-  if ! $chain =~  /^(ADMIN|INPUT)$/ { fail( "chain - ${chain}") }
+  if $chain !~  /^(ADMIN|INPUT)$/ { fail( "chain - ${chain}") }
   $chain_order_arr = member( $builtin, $chain ) ? {
     true    => [ $order['chain'][$chain], $chain ],
     default => [ $order['chain']['other'], $chain ],

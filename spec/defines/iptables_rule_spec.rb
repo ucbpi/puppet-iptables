@@ -21,22 +21,11 @@ describe 'iptables::rule' do
       end
 
       it do
-        mod_flags = {
-          'proto_tcp'  => true,
-          'chn_INPUT'  => true,
-          'act_ACCEPT' => true,
-          'tbl_filter' => true,
-        }
-
         options = {
-          'action'           => 'ACCEPT',
-          'chain'            => 'INPUT',
-          'mod_flags'        => mod_flags,
           'protocol'         => 'tcp',
           'destination_port' => '22',
           'source'           => [],
           'destination'      => [],
-          'table'            => 'filter',
         }
 
         should contain_iptables__ipv4
@@ -94,22 +83,11 @@ describe 'iptables::rule' do
     end
 
     it do
-      mod_flags = {
-        'proto_tcp' => true,
-        'chn_INPUT' => true,
-        'tbl_filter' => true,
-        'act_ACCEPT' => true,
-      }
-
       options = {
-        'action'           => 'ACCEPT',
-        'chain'            => 'INPUT',
-        'mod_flags'        => mod_flags,
         'protocol'         => 'tcp',
         'destination_port' => '22',
         'source'           => [],
         'destination'      => [],
-        'table'            => 'filter',
       }
       should contain_iptables__ipv6
       should contain_iptables__ipv6__rule('allow-ssh-global').with( { 'options' => options }  )
@@ -163,6 +141,45 @@ describe 'iptables::rule' do
         should_not contain_iptables__ipv4__rule('invalid ips')
         should_not contain_iptables__ipv6__rule('invalid ips')
       }.to raise_error(Puppet::Error, /invalid ip/)
+    end
+  end
+
+  context 'match rule with limit set' do
+    let(:title) { 'match-limit' }
+    let :params do
+      {
+        'limit' => '10/sec',
+        'limit_burst' => '5',
+        'protocol' => 'tcp',
+        'destination_port' => '22',
+      }
+    end
+
+    it do
+      should contain_iptables__ipv4__rule('match-limit').with_options({
+        'limit' => '10/sec',
+        'limit_burst' => '5',
+        'protocol' => 'tcp',
+        'destination_port' => '22',
+        'source' => [],
+        'destination' => [],
+      })
+      should contain_iptables__ipv6__rule('match-limit').with_options({
+        'limit' => '10/sec',
+        'limit_burst' => '5',
+        'protocol' => 'tcp',
+        'destination_port' => '22',
+        'source' => [],
+        'destination' => [],
+      })
+      should contain_concat__fragment('iptables-table-filter-chain-INPUT-rule-match-limit').with({
+        'order' => '1_filter_2_INPUT_500',
+        'content' => "-A INPUT -p tcp --dport 22 -m limit --limit 10/second --limit-burst 5 -j ACCEPT\n",
+      })
+      should contain_concat__fragment('ip6tables-table-filter-chain-INPUT-rule-match-limit').with({
+        'order' => '1_filter_2_INPUT_500',
+        'content' => "-A INPUT -p tcp --dport 22 -m limit --limit 10/second --limit-burst 5 -j ACCEPT\n",
+      })
     end
   end
 end

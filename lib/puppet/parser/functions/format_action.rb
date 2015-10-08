@@ -18,7 +18,7 @@ Examples:
   EOS
 ) do |args|
     action = 'ACCEPT'
-    action = args[0] unless args[0] == nil
+    action = args[0] unless args[0] == nil or args[0] == 'UNSET'
 
     if action == :undef or action == ''
       raise Puppet::ParseError, \

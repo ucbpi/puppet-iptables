@@ -37,8 +37,8 @@ Example:
 
     # just run through the values
     ret = default
-    ret = defs[name] unless defs[name] == nil or defs[name] == :undef
-    ret = vals[name] unless vals[name] == nil or vals[name] == :undef
+    ret = defs[name] unless defs[name] == nil or defs[name] == :undef or defs[name] == 'UNSET'
+    ret = vals[name] unless vals[name] == nil or vals[name] == :undef or vals[name] == 'UNSET'
 
     return ret
   end
