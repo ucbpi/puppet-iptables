@@ -96,7 +96,7 @@ define iptables::rule (
   $ips = split_ip_by_version($source)
   $ipd = split_ip_by_version($destination)
 
-  $options = {
+  $options = delete_values({
     'action'                   => $action,
     'chain'                    => $chain,
     'comment'                  => $comment,
@@ -119,9 +119,9 @@ define iptables::rule (
     'strict_protocol_checking' => $strict_protocol_checking,
     'state'                    => $state,
     'table'                    => $table,
-  }
+  }, 'UNSET')
 
-  $options6 = {
+  $options6 = delete_values({
     'action'                   => $action,
     'chain'                    => $chain,
     'comment'                  => $comment,
@@ -143,7 +143,7 @@ define iptables::rule (
     'strict_protocol_checking' => $strict_protocol_checking,
     'state'                    => $state,
     'table'                    => $table,
-  }
+  },'UNSET')
 
   # only generate rules for a particular protocol if either:
   # 1. both protocols have 0 addresses specified
