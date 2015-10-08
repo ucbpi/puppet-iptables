@@ -143,4 +143,43 @@ describe 'iptables::rule' do
       }.to raise_error(Puppet::Error, /invalid ip/)
     end
   end
+
+  context 'match rule with limit set' do
+    let(:title) { 'match-limit' }
+    let :params do
+      {
+        'limit' => '10/sec',
+        'limit_burst' => '5',
+        'protocol' => 'tcp',
+        'destination_port' => '22',
+      }
+    end
+
+    it do
+      should contain_iptables__ipv4__rule('match-limit').with_options({
+        'limit' => '10/sec',
+        'limit_burst' => '5',
+        'protocol' => 'tcp',
+        'destination_port' => '22',
+        'source' => [],
+        'destination' => [],
+      })
+      should contain_iptables__ipv6__rule('match-limit').with_options({
+        'limit' => '10/sec',
+        'limit_burst' => '5',
+        'protocol' => 'tcp',
+        'destination_port' => '22',
+        'source' => [],
+        'destination' => [],
+      })
+      should contain_concat__fragment('iptables-table-filter-chain-INPUT-rule-match-limit').with({
+        'order' => '1_filter_2_INPUT_500',
+        'content' => "-A INPUT -p tcp --dport 22 -m limit --limit 10/second --limit-burst 5 -j ACCEPT\n",
+      })
+      should contain_concat__fragment('ip6tables-table-filter-chain-INPUT-rule-match-limit').with({
+        'order' => '1_filter_2_INPUT_500',
+        'content' => "-A INPUT -p tcp --dport 22 -m limit --limit 10/second --limit-burst 5 -j ACCEPT\n",
+      })
+    end
+  end
 end
