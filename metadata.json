@@ -9,7 +9,7 @@
   "project_page": "https://github.com/arusso/puppet-iptables",
   "description": "iptables management module that updates the iptables save file,\n  without changing the running state of iptables.",
   "dependencies": [
-    {"version_requirement":">= 0.2.0","name":"ripienaar/concat"},
+    {"version_requirement":">= 1.0.0","name":"puppetlabs/concat"},
     {"version_requirement":">= 0.0.1","name":"arusso/oski"},
     {"version_requirement":">= 4.2.0","name":"puppetlabs/stdlib"}
   ],
