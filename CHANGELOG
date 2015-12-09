@@ -1,3 +1,6 @@
+2015-12-08 Aaron Russo <arusso@berkeley.edu> - 1.2.2
+* fix issue where only ADMIN and INPUT chains could be created for ipv6 rules
+
 2015-03-04 Aaron Russo <arusso@berkeley.edu> - 1.2.1
 * fix issue where COMMIT entry was not done on a per-table basis
 * refactor some of our spec tests, doing more thorough testing of content
